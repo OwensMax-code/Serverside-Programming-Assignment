@@ -30,3 +30,13 @@ userName varchar (25),
 primary key (postID),
 foreign key (userName) references UserAccount (userName)
 )engine innodb;
+
+create table BlogComment (
+commentID integer auto_increment,
+postID integer,
+commentContent varchar (300),
+userName varchar (25),
+primary key (commentID),
+foreign key (postID) references BlogPost (postID),
+foreign key (userName) references UserAccount (userName)
+)engine innodb;
