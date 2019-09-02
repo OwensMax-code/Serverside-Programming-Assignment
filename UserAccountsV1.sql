@@ -52,8 +52,17 @@ CREATE TABLE BlogComment (
         REFERENCES UserAccount (userName)
 )  ENGINE INNODB;
 
-
-
+  -- Update trigger which encrypts password 
+ 
+delimiter $$
+ create trigger EncryptPassword before insert on AccountDetails
+ for each row
+ begin 
+ set @salt = char(round(rand()*25)+97);
+ set new.userPassword = sha1(concat(@salt, new.userPassword));
+ end$$
+ delimiter ;
+ 
  -- update trigger which creates a simple user login table, for bridging with the blog post/comment tables
  
  delimiter $$
@@ -63,7 +72,7 @@ CREATE TABLE BlogComment (
  insert into UserAccount values (new.userName, new.userPassword, new.AccountID);
  end$$
  delimiter ;
- 
+
   -- first creating an account complete with information and with username and password. Trigger automatically fills the UserAccount table. 
   
 insert into AccountDetails values (null,"Amit","Sarkar","AmitTheSlayer6969","password3","AmitLordOfTheSun@NZGardner.com",'1000-12-25',033352456,"34 Kingly Street, Calimara","PO Box Fishman"); 
@@ -84,6 +93,21 @@ insert into BlogComment values (null,1,"I am providing feedback to this post!","
 insert into BlogComment values (null,1,"Lost my dog?","AmitTheSlayer6969");
 insert into BlogComment values (null,1,"I disagree with this post!","AmitTheSlayer6969");
 
+ -- View which retrieves some account details from userAccount table
+
+CREATE VIEW basicUserInfo AS
+    SELECT 
+        U.userName,
+        A.firstName,
+        A.lastName,
+        A.emailAddress
+    FROM
+        UserAccount U
+            INNER JOIN
+        AccountDetails A ON U.accountID = A.accountID
+    WHERE
+        U.accountID = A.accountID;
+
  -- View which displays blog post with the comment count
 
 CREATE VIEW BlogMostComments AS
@@ -96,8 +120,6 @@ CREATE VIEW BlogMostComments AS
     WHERE
         B.postID = C.PostID
     GROUP BY B.postTitle;
-    
-select * from BlogMostComments;
 
  -- View which displays users and their total posts
  
@@ -112,6 +134,7 @@ CREATE VIEW UsersTotalPosts as
 		U.userName = B.userName
 	GROUP BY U.userName; 
     
-select * from UsersTotalPosts;
-    
+															select * from UsersTotalPosts;
+                                                            select * from BlogMostComments;
+                                                            select * from basicUserInfo;
     
