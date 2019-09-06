@@ -11,7 +11,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>Create Post</title>
 </head>
-<body class="w-75" style="margin:0 auto">
+<body class="w-75" style="margin:0 auto;background-image: url(Bengal-BG.png);background-repeat: no-repeat;background-position: center;background-size: cover;">
 <header>
 <nav class="navbar navbar-light" style="background-color:#FF7F50;">
   <a class="navbar-brand" href="#">
@@ -36,13 +36,18 @@
 </header>
 <main style="">
 <div class="d-flex flex-column text-center" style="margin-top:5rem;">
-<h1>Create post as:</h1>
-<h1>AmitTheSlayer6969</h1>
-<form class="form-group w-50 border border-warning rounded" style="margin: 0 auto;margin-top:2rem;">
-    <label for="exampleFormControlTextarea1">Example textarea</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+<div class="w-50 rounded" style="margin:0 auto;color:#000000;background-color:#FF7F50;">
+<h1 class="display-5">Create post as:</h1>
+<h1 class="display-5">AmitTheSlayer6969</h1>
 </div>
+<form class="form-group w-50 p-2 border border-warning rounded d-flex flex-column" style="margin: 0 auto;margin-top:2rem;background-color:#FF7F50;">
+    <label>Post Title:</label>
+	<input type="text" id="postTitle" placeholder="post title" class="m-1"></input>
+	<label>Post Content:</label>
+    <textarea class="form-control m-1" id="postContent" rows="5" placeholder="type your post here!"></textarea>
+	<button type="submit" class="btn btn-secondary m-1">Post!</button>
 </form>
+</div>
 </main>
 </body>
 
