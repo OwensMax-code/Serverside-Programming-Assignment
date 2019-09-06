@@ -41,8 +41,8 @@ CREATE TABLE UserAccount (
 )  ENGINE INNODB;
 
 CREATE TABLE BlogPost (
-    postID INTEGER AUTO_INCREMENT,
-    postTitle VARCHAR(50) NOT NULL,
+	postID INTEGER AUTO_INCREMENT,
+    postTitle VARCHAR(50) NOT NULL UNIQUE,
     postContent VARCHAR(500) NOT NULL,
     userName VARCHAR(25) NOT NULL,
     PRIMARY KEY (postID),
@@ -62,7 +62,7 @@ CREATE TABLE BlogComment (
         REFERENCES UserAccount (userName)
 )  ENGINE INNODB;
 
-  -- Update trigger which encrypts password 
+   -- Update trigger which encrypts password 
  
 delimiter $$
  create trigger EncryptPassword before insert on AccountDetails
@@ -71,7 +71,6 @@ delimiter $$
  set new.userPassword = SHA2(new.userPassword, 256);
  end$$
  delimiter ;
- 
  -- update trigger which creates a simple user login table, for bridging with the blog post/comment tables
  
  delimiter $$
@@ -81,16 +80,6 @@ delimiter $$
  insert into UserAccount values (new.userName, new.userPassword, new.AccountID);
  end$$
  delimiter ;
- 
-  -- trigger which adds to table whenever a detail is changed from account details
-
-  /*delimiter $$
-  create trigger DetailChange after update on AccountDetails
-  for each row
-  begin
-  insert into UpdatedAccountInfo values (new.accountID, new.userName, userName, CURRENT_TIMESTAMP());
-  end$$
-  delimiter ;*/
 
   -- first creating an account complete with information and with username and password. Trigger automatically fills the UserAccount table. 
   
@@ -99,12 +88,10 @@ insert into AccountDetails values (null,"Nick","Leslie","SnickerMan","ImBald","G
 insert into AccountDetails values (null,"Emily","Chuck 'E' Cheese","WheresMySuperSuit","Fibbonacci","erangleMan@gmail.com",'1997-05-22',034968394,"8 Newsons Road","RD3 Cheviot"); 
 insert into AccountDetails values (null,"Spup","M'larky","MrKansas","flubber","FlatEarthSociety@FESAdmin.com",'1990-05-04',035903456,"NASA","Miami, FL"); 
 
-update AccountDetails set userName = "Calamari Joe" where AccountID = 2;
-select userName from AccountDetails where AccountID = 2;
 select * from AccountDetails;
-
-insert into BlogPost values (null,"I love all the sirens","sing sing sing sing isng isngsigsngodugnhogundgridrgidgrdrgubdgr","AmitTheSlayer6969");
-insert into BlogPost values (null,"Ping Ping is the best","fthy6dubdb6uytedjtdyujhytedujhytiuhbd65eu56u","MrKansas");
+select * from UserAccount;
+insert into BlogPost values (null,"I love all the sirens","this is a great text box! I sure do love it! Man, ice creams are great.","AmitTheSlayer6969");
+insert into BlogPost values (null,"Amit is the best","Auckland has too many people. I've almost had enough!","MrKansas");
 insert into BlogPost values (null,"Please help; my teacher is trying to kill me","I genuinely think I am in extreme danger. send help","WheresMySuperSuit");
 insert into BlogPost values (null,"I lost my dog somewhere in the park","A group of angry cousins came at me with knives. Big troubles lie ahead.","WheresMySuperSuit");
 insert into BlogPost values (null,"Good lord, this website!","This is by far the greatest website I have EVER seen. Keep up the A+ work! I am so happy whenever I visit this website.","MrKansas");
@@ -115,8 +102,6 @@ insert into BlogComment values (null,3,"I am angry with this post!","WheresMySup
 insert into BlogComment values (null,1,"I am providing feedback to this post!","AmitTheSlayer6969");
 insert into BlogComment values (null,1,"Lost my dog?","AmitTheSlayer6969");
 insert into BlogComment values (null,1,"I disagree with this post!","AmitTheSlayer6969");
-
-select * from UserAccount;
 
  -- View which retrieves some account details from userAccount table
 
@@ -135,7 +120,7 @@ CREATE VIEW basicUserInfo AS
 
  -- View which displays blog post with the comment count
 
-CREATE VIEW BlogMostComments AS
+CREATE VIEW BlogAndCommentCount AS
     SELECT 
         B.postTitle, COUNT(C.commentID) AS TotalComments
     FROM
@@ -161,6 +146,6 @@ CREATE VIEW UsersTotalPosts as
 
     
 															select * from UsersTotalPosts;
-                                                            select * from BlogMostComments;
+                                                            select * from BlogAndCommentCount;
                                                             select * from basicUserInfo;
     
