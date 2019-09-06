@@ -1,5 +1,5 @@
 SET SQL_SAFE_UPDATES = 0;
-drop database Accounts;
+drop database if exists Accounts;
 create database if not exists Accounts;
 use Accounts;
 
@@ -8,7 +8,7 @@ CREATE TABLE AccountDetails (
     firstName CHAR(40) NOT NULL,
     lastName CHAR(40) NOT NULL,
     userName VARCHAR(25) UNIQUE,
-    userPassword VARCHAR(32) UNIQUE,
+    userPassword VARCHAR(264) UNIQUE,
     emailAddress VARCHAR(30) UNIQUE,
     dateOfBirth DATE NOT NULL,
     phoneNo VARCHAR(20) NOT NULL,
@@ -17,9 +17,19 @@ CREATE TABLE AccountDetails (
     PRIMARY KEY (accountID)
 )  ENGINE INNODB;
 
+/*CREATE TABLE UpdatedAccountInfo (
+    accountID INTEGER,
+    oldInfo VARCHAR(100),
+    newInfo VARCHAR(100),
+    dateChanged DATE,
+    PRIMARY KEY (accountID),
+    FOREIGN KEY (accountID)
+        REFERENCES AccountDetails (accountID)
+)  ENGINE INNODB;*/
+
 CREATE TABLE UserAccount (
     userName VARCHAR(25) UNIQUE NOT NULL,
-    userPassword VARCHAR(32) UNIQUE NOT NULL,
+    userPassword VARCHAR(264) UNIQUE NOT NULL,
     accountID INTEGER NOT NULL,
     PRIMARY KEY (userName),
     FOREIGN KEY (accountID)
@@ -58,8 +68,7 @@ delimiter $$
  create trigger EncryptPassword before insert on AccountDetails
  for each row
  begin 
- set @salt = char(round(rand()*25)+97);
- set new.userPassword = sha1(concat(@salt, new.userPassword));
+ set new.userPassword = SHA2(new.userPassword, 256);
  end$$
  delimiter ;
  
@@ -72,6 +81,16 @@ delimiter $$
  insert into UserAccount values (new.userName, new.userPassword, new.AccountID);
  end$$
  delimiter ;
+ 
+  -- trigger which adds to table whenever a detail is changed from account details
+
+  /*delimiter $$
+  create trigger DetailChange after update on AccountDetails
+  for each row
+  begin
+  insert into UpdatedAccountInfo values (new.accountID, new.userName, userName, CURRENT_TIMESTAMP());
+  end$$
+  delimiter ;*/
 
   -- first creating an account complete with information and with username and password. Trigger automatically fills the UserAccount table. 
   
@@ -79,6 +98,10 @@ insert into AccountDetails values (null,"Amit","Sarkar","AmitTheSlayer6969","pas
 insert into AccountDetails values (null,"Nick","Leslie","SnickerMan","ImBald","Glenda12@NZGardner.com",'2004-01-11',033453623,"University of Canterbury","PO Box UC"); 
 insert into AccountDetails values (null,"Emily","Chuck 'E' Cheese","WheresMySuperSuit","Fibbonacci","erangleMan@gmail.com",'1997-05-22',034968394,"8 Newsons Road","RD3 Cheviot"); 
 insert into AccountDetails values (null,"Spup","M'larky","MrKansas","flubber","FlatEarthSociety@FESAdmin.com",'1990-05-04',035903456,"NASA","Miami, FL"); 
+
+update AccountDetails set userName = "Calamari Joe" where AccountID = 2;
+select userName from AccountDetails where AccountID = 2;
+select * from AccountDetails;
 
 insert into BlogPost values (null,"I love all the sirens","sing sing sing sing isng isngsigsngodugnhogundgridrgidgrdrgubdgr","AmitTheSlayer6969");
 insert into BlogPost values (null,"Ping Ping is the best","fthy6dubdb6uytedjtdyujhytedujhytiuhbd65eu56u","MrKansas");
@@ -92,6 +115,8 @@ insert into BlogComment values (null,3,"I am angry with this post!","WheresMySup
 insert into BlogComment values (null,1,"I am providing feedback to this post!","AmitTheSlayer6969");
 insert into BlogComment values (null,1,"Lost my dog?","AmitTheSlayer6969");
 insert into BlogComment values (null,1,"I disagree with this post!","AmitTheSlayer6969");
+
+select * from UserAccount;
 
  -- View which retrieves some account details from userAccount table
 
@@ -133,6 +158,7 @@ CREATE VIEW UsersTotalPosts as
 	WHERE
 		U.userName = B.userName
 	GROUP BY U.userName; 
+
     
 															select * from UsersTotalPosts;
                                                             select * from BlogMostComments;
