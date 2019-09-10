@@ -7,8 +7,8 @@ CREATE TABLE AccountDetails (
     accountID INTEGER AUTO_INCREMENT,
     firstName CHAR(40) NOT NULL,
     lastName CHAR(40) NOT NULL,
-    userName VARCHAR(25) UNIQUE,
-    userPassword VARCHAR(264) UNIQUE,
+    userName VARCHAR(25) UNIQUE NOT NULL,
+    userPassword VARCHAR(264) UNIQUE NOT NULL,
     emailAddress VARCHAR(30) UNIQUE,
     dateOfBirth DATE NOT NULL,
     phoneNo VARCHAR(20) NOT NULL,
@@ -17,17 +17,22 @@ CREATE TABLE AccountDetails (
     PRIMARY KEY (accountID)
 )  ENGINE INNODB;
 
-/*CREATE TABLE UpdatedAccountInfo (
+CREATE TABLE OldDetails (
     accountID INTEGER,
-    oldInfo VARCHAR(100),
-    newInfo VARCHAR(100),
-    dateChanged DATE,
-    PRIMARY KEY (accountID),
-    FOREIGN KEY (accountID)
-        REFERENCES AccountDetails (accountID)
-)  ENGINE INNODB;*/
+    dateModified date,
+    firstName CHAR(40) NOT NULL,
+    lastName CHAR(40) NOT NULL,
+    userName VARCHAR(25),
+    userPassword VARCHAR(264),
+    emailAddress VARCHAR(30),
+    dateOfBirth DATE NOT NULL,
+    phoneNo VARCHAR(20) NOT NULL,
+    address1 VARCHAR(50) NOT NULL,
+    address2 VARCHAR(50) NOT NULL,
+    FOREIGN KEY (accountID) REFERENCES AccountDetails (accountID)
+)engine innodb;
 
-CREATE TABLE UserAccount (
+CREATE TABLE Login (
     userName VARCHAR(25) UNIQUE NOT NULL,
     userPassword VARCHAR(264) UNIQUE NOT NULL,
     accountID INTEGER NOT NULL,
@@ -47,7 +52,7 @@ CREATE TABLE BlogPost (
     userName VARCHAR(25) NOT NULL,
     PRIMARY KEY (postID),
     FOREIGN KEY (userName)
-        REFERENCES UserAccount (userName)
+        REFERENCES Login (userName)
 )  ENGINE INNODB;
 
 CREATE TABLE BlogComment (
@@ -59,7 +64,7 @@ CREATE TABLE BlogComment (
     FOREIGN KEY (postID)
         REFERENCES BlogPost (postID),
     FOREIGN KEY (userName)
-        REFERENCES UserAccount (userName)
+        REFERENCES Login (userName)
 )  ENGINE INNODB;
 
    -- Update trigger which encrypts password 
@@ -71,15 +76,26 @@ delimiter $$
  set new.userPassword = SHA2(new.userPassword, 256);
  end$$
  delimiter ;
+ 
  -- update trigger which creates a simple user login table, for bridging with the blog post/comment tables
  
  delimiter $$
  create trigger CreateUserLogin after insert on AccountDetails
  for each row
  begin 
- insert into UserAccount values (new.userName, new.userPassword, new.AccountID);
+ insert into Login values (new.userName, new.userPassword, new.AccountID);
  end$$
  delimiter ;
+
+ -- trigger which updates OldDetails whenever a row in AccountDetails is updated
+
+delimiter $$
+create trigger StoreOldDetails after update on AccountDetails
+for each row
+begin
+insert into OldDetails values (old.accountID,current_timestamp(),old.firstName,old.lastName,old.userName,old.userPassword,old.emailAddress,old.dateOfBirth,old.phoneNo,old.address1,old.address2);
+end$$
+delimiter ;
 
   -- first creating an account complete with information and with username and password. Trigger automatically fills the UserAccount table. 
   
@@ -88,8 +104,14 @@ insert into AccountDetails values (null,"Nick","Leslie","SnickerMan","ImBald","G
 insert into AccountDetails values (null,"Emily","Chuck 'E' Cheese","WheresMySuperSuit","Fibbonacci","erangleMan@gmail.com",'1997-05-22',034968394,"8 Newsons Road","RD3 Cheviot"); 
 insert into AccountDetails values (null,"Spup","M'larky","MrKansas","flubber","FlatEarthSociety@FESAdmin.com",'1990-05-04',035903456,"NASA","Miami, FL"); 
 
+
+
+update AccountDetails set emailAddress = "Glenda13@Gmail.com" where accountID = 2;
+
+select * from OldDetails;
+
 select * from AccountDetails;
-select * from UserAccount;
+select * from Login;
 insert into BlogPost values (null,"I love all the sirens","this is a great text box! I sure do love it! Man, ice creams are great.","AmitTheSlayer6969");
 insert into BlogPost values (null,"Amit is the best","Auckland has too many people. I've almost had enough!","MrKansas");
 insert into BlogPost values (null,"Please help; my teacher is trying to kill me","I genuinely think I am in extreme danger. send help","WheresMySuperSuit");
@@ -112,7 +134,7 @@ CREATE VIEW basicUserInfo AS
         A.lastName,
         A.emailAddress
     FROM
-        UserAccount U
+        Login U
             INNER JOIN
         AccountDetails A ON U.accountID = A.accountID
     WHERE
@@ -137,7 +159,7 @@ CREATE VIEW UsersTotalPosts as
 	SELECT
 		U.userName, COUNT(B.postID) as TotalPosts
 	FROM
-		userAccount U
+		Login U
 			INNER JOIN
 		BlogPost B on U.userName = B.userName
 	WHERE
