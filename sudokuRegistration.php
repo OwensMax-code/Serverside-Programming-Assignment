@@ -23,7 +23,7 @@
   <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="sudokuHome.html"><h3>Home </h3><span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="sudokuHome.php"><h3>Home </h3><span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#"><h3>Posts</h3></a>
@@ -37,7 +37,7 @@
 </nav>
 </header>
 <main>
-<div>
+<div class="d-flex flex-column justify-content-center">
 <h1 class="display-5 text-center text-danger mt-3 mb-3">Registration!</h1>
 <form class="w-50 border rounded border-dark bg-light text-center" style="margin:0 auto;padding:1rem;">
   <div class="form-row">
@@ -65,12 +65,14 @@
     </div>
     <div class="form-group col-md-6">
       <label for="phoneNo">Phone Number</label>
-      <input type="text" class="form-control" id="phoneNo" placeholder="124-342-6345">
+      <input type="text" class="form-control" id="phoneNo" placeholder="213-456-7890">
     </div>
   </div>
   <button type="submit" class="btn btn-secondary">Sign me up!</button>
 </form>
-  <a href="sudokuLogin.html"><button class="btn btn-secondary">Wait, I already have an account</button></a>
+<div class="d-flex justify-content-center mt-3">
+  <a href="sudokuLogin.php" class="btn btn-secondary">Wait, I already have an account</a>
+  </div>
 </div>
 </main>
 </body>

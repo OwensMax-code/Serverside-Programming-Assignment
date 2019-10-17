@@ -23,7 +23,7 @@
   <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="sudokuHome.html"><h3>Home </h3><span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="sudokuHome.php"><h3>Home </h3><span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#"><h3>Posts</h3></a>
@@ -33,7 +33,7 @@
       </li>
     </ul>
   </div>
-  <button href="sudokuRegistration.html" type="button" class="btn btn-secondary btn-lg">Login/Signup!</button>
+  <button href="sudokuRegistration.php" type="button" class="btn btn-secondary btn-lg">Login/Signup!</button>
 </nav>
 </header>
 <main>
@@ -53,7 +53,7 @@
 	  <button href="" type="submit" class="btn btn-secondary">Login!</button>
 	  <button href="" type="button" class="btn btn-secondary">Forgot your password?</button>
 	</div>
-  <a href="sudokuRegistration.html"><button type="button" class="btn btn-secondary">Create an account!</button></a>
+  <a href="sudokuRegistration.php"><button type="button" class="btn btn-secondary">Create an account!</button></a>
 </form>
 </div>
 </main>
