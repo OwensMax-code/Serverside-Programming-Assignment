@@ -26,4 +26,36 @@ function getBlogPosts($db)
     $result = $db->query($sql);  
     return $result;
 }
+
+//*********************************************************
+function getAccountId($db, $userName, $password)
+{
+	$sql = "select * from Login where userName = '$userName' and userPassword = '$password'";
+	$account = $db->query($sql);
+	$row = $account->fetch();
+	$result = $row['accountID'];
+	return $result;
+	
+}
+
+//*********************************************************
+function verifyLogin($userName, $password)
+{
+	  $result = true;
+   if ($userName =='')
+   {
+        $result = false;
+        echo '<script language="javascript">';
+		echo 'alert("Please enter a username")';
+		echo '</script>';
+   }    
+   if ($password =='')
+   {
+        $result = false;
+        echo '<script language="javascript">';
+		echo 'alert("Please enter a password")';
+		echo '</script>';
+   }
+    return $result;
+}
 ?>

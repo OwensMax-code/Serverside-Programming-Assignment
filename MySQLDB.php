@@ -30,12 +30,7 @@ class MySQL
 			{
 			   trigger_error('could not connect to server' );
 			   $this->dbconnectError = true;
-			}
-			else
-			{
-				echo '<br> connected to server <br>';
-			}
-		   
+			}		   
 		}
 
 		function selectDatabase()
@@ -44,10 +39,6 @@ class MySQL
 			{
 				trigger_error( 'could not select database' );  
 				$this->dbconnectError = true;                     
-			}
-			else
-			{
-				echo "<br> $this->dbName  database selected <br>";
 			}
 		}
      

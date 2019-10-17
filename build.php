@@ -20,7 +20,7 @@ $sql = "CREATE TABLE AccountDetails (
 		firstName CHAR(40) NOT NULL,
 		lastName CHAR(40) NOT NULL,
 		userName VARCHAR(25) UNIQUE NOT NULL,
-		userPassword VARCHAR(264) UNIQUE NOT NULL,
+		userPassword VARCHAR(255) UNIQUE NOT NULL,
 		emailAddress VARCHAR(30) UNIQUE,
 		dateOfBirth DATE NOT NULL,
 		phoneNo VARCHAR(20) NOT NULL,
@@ -37,7 +37,7 @@ $sql = "CREATE TABLE OldDetails (
 		firstName CHAR(40) NOT NULL,
 		lastName CHAR(40) NOT NULL,
 		userName VARCHAR(25),
-		userPassword VARCHAR(264),
+		userPassword VARCHAR(255),
 		emailAddress VARCHAR(30),
 		dateOfBirth DATE NOT NULL,
 		phoneNo VARCHAR(20) NOT NULL,
@@ -90,12 +90,6 @@ $db->createTable($Table, $sql);
 
 // trigger creation
 
-// encrypt password trigger
-$Trigger = "EncryptPassword";
-$sql = "create trigger EncryptPassword before insert on AccountDetails
-		for each row
-		set new.userPassword = SHA2(new.userPassword, 256);";
-$db->createTrigger($Trigger, $sql);
 // create user login trigger
 $Trigger = "CreateUserLogin";
 $sql = "create trigger CreateUserLogin after insert on AccountDetails
@@ -112,7 +106,7 @@ $db->createTrigger($Trigger, $sql);
 // existing data insertion
 
 // Account Details insertion
-$sql = 'insert into AccountDetails values (null,"Amit","Sarkar","AmitTheSlayer6969","password3","AmitLordOfTheSun@NZGardner.com","1000-12-25",033352456,"34 Kingly Street, Calimara","PO Box Fishman");';
+$sql = 'insert into AccountDetails values (null,"Amit","Sarkar","AmitTheSlayer6969","password3","AmitLordOfTheSun@NZGardner.com","0000-12-25",033352456,"34 Kingly Street, Calimara","PO Box Fishman");';
 $db->insertRow($sql);
 $sql = 'insert into AccountDetails values (null,"Nick","Leslie","SnickerMan","ImBald","Glenda12@NZGardner.com","2004-01-11",033453623,"University of Canterbury","PO Box UC");';
 $db->insertRow($sql);
