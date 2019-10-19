@@ -19,8 +19,8 @@ $sql = "CREATE TABLE AccountDetails (
 		accountID INTEGER AUTO_INCREMENT,
 		firstName CHAR(40) NOT NULL,
 		lastName CHAR(40) NOT NULL,
-		userName VARCHAR(25) UNIQUE NOT NULL,
-		userPassword VARCHAR(255) UNIQUE NOT NULL,
+		userName VARCHAR(50) UNIQUE NOT NULL,
+		hash VARCHAR(255) UNIQUE NOT NULL,
 		emailAddress VARCHAR(30) UNIQUE,
 		dateOfBirth DATE NOT NULL,
 		phoneNo VARCHAR(20) NOT NULL,
@@ -36,8 +36,8 @@ $sql = "CREATE TABLE OldDetails (
 		dateModified date,
 		firstName CHAR(40) NOT NULL,
 		lastName CHAR(40) NOT NULL,
-		userName VARCHAR(25),
-		userPassword VARCHAR(255),
+		userName VARCHAR(50),
+		hash VARCHAR(255),
 		emailAddress VARCHAR(30),
 		dateOfBirth DATE NOT NULL,
 		phoneNo VARCHAR(20) NOT NULL,
@@ -49,16 +49,16 @@ $db->createTable($Table, $sql);
 // Login Table Creation
 $Table = "Login";
 $sql = "CREATE TABLE Login (
-		userName VARCHAR(25) UNIQUE NOT NULL,
-		userPassword VARCHAR(264) UNIQUE NOT NULL,
+		userName VARCHAR(50) UNIQUE NOT NULL,
+		hash VARCHAR(255) UNIQUE NOT NULL,
 		accountID INTEGER NOT NULL,
 		PRIMARY KEY (userName),
 		FOREIGN KEY (accountID)
 			REFERENCES AccountDetails (accountID),
 		FOREIGN KEY (userName)
 			REFERENCES AccountDetails (userName),
-		FOREIGN KEY (userPassword)
-			REFERENCES AccountDetails (userPassword)
+		FOREIGN KEY (hash)
+			REFERENCES AccountDetails (hash)
 		)ENGINE INNODB;";
 $db->createTable($Table, $sql);
 // Blog Post table creation
@@ -67,7 +67,7 @@ $sql = "CREATE TABLE BlogPost (
 		postID INTEGER AUTO_INCREMENT,
 		postTitle VARCHAR(50) NOT NULL UNIQUE,
 		postContent VARCHAR(500) NOT NULL,
-		userName VARCHAR(25) NOT NULL,
+		userName VARCHAR(50) NOT NULL,
 		PRIMARY KEY (postID),
 		FOREIGN KEY (userName)
 			REFERENCES Login (userName)
@@ -94,25 +94,41 @@ $db->createTable($Table, $sql);
 $Trigger = "CreateUserLogin";
 $sql = "create trigger CreateUserLogin after insert on AccountDetails
 		for each row
-		insert into Login values (new.userName, new.userPassword, new.AccountID);";
+		insert into Login values (new.userName, new.hash, new.AccountID);";
 $db->createTrigger($Trigger, $sql);
 // create store old details trigger
 $Trigger = "StoreOldDetails";
 $sql = "create trigger StoreOldDetails after update on AccountDetails
 		for each row
-		insert into OldDetails values (old.accountID,current_timestamp(),old.firstName,old.lastName,old.userName,old.userPassword,old.emailAddress,old.dateOfBirth,old.phoneNo,old.address1,old.address2);";
+		insert into OldDetails values (old.accountID,current_timestamp(),old.firstName,old.lastName,old.userName,old.hash,old.emailAddress,old.dateOfBirth,old.phoneNo,old.address1,old.address2);";
 $db->createTrigger($Trigger, $sql);
 
 // existing data insertion
 
 // Account Details insertion
-$sql = 'insert into AccountDetails values (null,"Amit","Sarkar","AmitTheSlayer6969","password3","AmitLordOfTheSun@NZGardner.com","0000-12-25",033352456,"34 Kingly Street, Calimara","PO Box Fishman");';
+$userName = 'AmitTheSlayer6969';
+$password = 'password3';
+$login = $userName . $password;
+$hash = password_hash($login, PASSWORD_DEFAULT);
+$sql = "insert into AccountDetails values (null,'Amit','Sarkar','$userName','$hash','AmitLordOfTheSun@NZGardner.com','0000-12-25',033352456,'34 Kingly Street, Calimara','PO Box Fishman');";
 $db->insertRow($sql);
-$sql = 'insert into AccountDetails values (null,"Nick","Leslie","SnickerMan","ImBald","Glenda12@NZGardner.com","2004-01-11",033453623,"University of Canterbury","PO Box UC");';
+$userName = 'SnickerMan';
+$password = 'ImBald';
+$login = $userName . $password;
+$hash = password_hash($login, PASSWORD_DEFAULT);
+$sql = "insert into AccountDetails values (null,'Nick','Leslie','$userName','$hash','Glenda12@NZGardner.com','2004-01-11',033453623,'University of Canterbury','PO Box UC');";
 $db->insertRow($sql);
-$sql = 'insert into AccountDetails values (null,"Emily","Chuck Cheese","WheresMySuperSuit","Fibbonacci","erangleMan@gmail.com","1997-05-22",034968394,"8 Newsons Road","RD3 Cheviot"); ';
+$userName = 'WheresMySuperSuit';
+$password = 'Fibbonacci';
+$login = $userName . $password;
+$hash = password_hash($login, PASSWORD_DEFAULT);
+$sql = "insert into AccountDetails values (null,'Emily','Chuck Cheese','$userName','$hash','erangleMan@gmail.com','1997-05-22',034968394,'8 Newsons Road','RD3 Cheviot');";
 $db->insertRow($sql);
-$sql = 'insert into AccountDetails values (null,"Spup","Malarky","MrKansas","flubber","FlatEarthSociety@FESAdmin.com","1990-05-04",035903456,"NASA","Miami, FL"); ';
+$userName = 'MrKansas';
+$password = 'flubber';
+$login = $userName . $password;
+$hash = password_hash($login, PASSWORD_DEFAULT);
+$sql = "insert into AccountDetails values (null,'Spup','Malarky','$userName','$hash','FlatEarthSociety@FESAdmin.com','1990-05-04',035903456,'NASA','Miami, FL'); ";
 $db->insertRow($sql);
 
 // blog post insertion

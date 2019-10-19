@@ -1,3 +1,15 @@
+<?php
+session_start();
+require_once 'myFunctions.php';
+require_once 'displayFunctions.php';
+include_once 'MYSQLDB.php';
+require 'db.php';
+$userName = retrieveUserName($db, $_SESSION['theAccountID']); 
+if (!isset($_SESSION['theAccountID']))
+{
+	header('Location: sudokuLogin.php?msg=notLoggedIn');
+}
+?>
 <HTML>
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -7,13 +19,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Home</title>
+  <title>Profile</title>
 </head>
-<body class="w-75" style="margin:0 auto; background-image: url('sudoku-bg1.jpg')">
+<body class="w-75" style="margin:0 auto; background-image: url('img/sudoku-bg1.jpg')">
 <header>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand border border-dark" href="#">
-    <img src="logo.png" class="d-inline-block align-top img-fluid" alt="">
+    <img src="img/logo.png" class="d-inline-block align-top img-fluid" alt="">
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -27,15 +39,24 @@
         <a class="nav-link" href="#"><h3>Posts</h3></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#"><h3>Profile</h3></a>
+        <a class="nav-link" href="userProfile.php"><h3>Profile</h3></a>
       </li>
     </ul>
   </div>
-  <a href="sudokuLogin.php"><button type="button" class="btn btn-secondary btn-lg">Login/Signup!</button></a>
+  <?php 
+  echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";    
+  ?>
 </nav>
 </header>
 <main>
 <h1 class="display-5 text-center text-danger mt-3 mb-3">Your Profile</h1>
+<div class="d-flex flex-row justify-content-center">
+<div class="row bg-light w-50 p-3">
+<?php
+echo getUserProfile($db, $_SESSION['theAccountID']);
+?>
+</div>
+</div>
 </main>
 </body>
 

@@ -1,30 +1,25 @@
 <?php
-session_save_path("./");
 session_start();
 require_once 'myFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
-
 if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 {
-	 $password = $_POST['password'];
-     $userName = $_POST['userName'];
-     if ( verifyLogin( $userName, $password ) )
-     {
-        $theAccountID = getAccountID( $db, $userName, $password );
-        if ( !$theAccountID )
-        {
-            $result = false;
-            echo "Incorrect username/password. Please try again!<br />";
-        }    
-        else
-        {
-			var_dump($theAccountID);
-			$_SESSION[ 'theAccountID' ] = $theAccountID;
-			header('Location: userProfile.php');
-        }    
-    }
-}    
+	$userName = $_POST['userName'];
+	$password = $_POST['password'];
+	$hash = retrieveLogin($db, $userName);
+	$login = $userName . $password;
+	if (password_verify($login, $hash))
+	{			
+	$theAccountID = getAccountID( $db, $userName, $hash );
+	$_SESSION['theAccountID'] = $theAccountID;
+	header('Location: userProfile.php'); 
+	}
+	else 
+	{
+		header('Location:sudokuLogin.php?msg=badLogin');
+	}
+}
 ?>
 <HTML>
 	<head>
@@ -37,11 +32,11 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 					<meta http-equiv="x-ua-compatible" content="ie=edge">
 						<title>Login/Signup</title>
 					</head>
-					<body class="w-75" style="margin:0 auto; background-image: url('sudoku-bg1.jpg')">
+					<body class="w-75" style="margin:0 auto; background-image: url('img/sudoku-bg1.jpg')">
 						<header>
 							<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 								<a class="navbar-brand border border-dark" href="#">
-									<img src="logo.png" class="d-inline-block align-top img-fluid" alt="">
+									<img src="img/logo.png" class="d-inline-block align-top img-fluid" alt="">
 									</a>
 									<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 										<span class="navbar-toggler-icon"></span>
@@ -66,12 +61,22 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 											</li>
 										</ul>
 									</div>
-									<button href="sudokuRegistration.php" type="button" class="btn btn-secondary btn-lg">Login/Signup!</button>
+									<a href="sudokuLogin.php"><button type="button" class="btn btn-secondary btn-lg">Login/Signup!</button></a>
 								</nav>
 							</header>
 							<main>
 								<div>
-									<h1 class="display-2 text-center text-danger mt-5 mb-5">Please login!</h1>
+									<h1 class="display-2 text-center text-danger mt-3 mb-3">Login</h1>
+									<?php
+									if (isset($_GET["msg"]) && $_GET["msg"] == 'badLogin')
+									{
+										echo '<h3 class="text-center text-danger">Incorrect username/password combination.</h3>';
+									}
+									else if (isset($_GET["msg"]) && $_GET["msg"] == 'notLoggedIn')
+									{
+										echo '<h3 class="text-center text-danger">Please login to access this page.</h3>';
+									}
+									?>
 									<form action="sudokuLogin.php" method="POST" role="form" class="w-50 border rounded border-dark bg-light text-center" style="margin:0 auto;padding:1rem;">
 										<div class="form-group">
 											<label for="userName">Username</label>

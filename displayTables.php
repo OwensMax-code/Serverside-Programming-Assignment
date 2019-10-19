@@ -17,7 +17,7 @@ while ( $aRow = $accountDetails->fetch( ) )
 	$outputLine .= "<td>$aRow[firstName]</td>";
 	$outputLine .= "<td>$aRow[lastName]</td>";
 	$outputLine .= "<td>$aRow[userName]</td>";
-	$outputLine .= "<td>$aRow[userPassword]</td>";
+	$outputLine .= "<td>$aRow[hash]</td>";
 	$outputLine .= "<td>$aRow[emailAddress]</td>";
 	$outputLine .= "<td>$aRow[dateOfBirth]</td>";
 	$outputLine .= "<td>$aRow[phoneNo]</td>";
@@ -35,7 +35,7 @@ echo ("<table border=1><tr><td>user Name</td><td>Password</td><td>Account ID</td
 while ( $aRow = $Login->fetch( ) )
 {
 	$outputLine = "<tr><td>$aRow[userName]</td>";
-	$outputLine .= "<td>$aRow[userPassword]</td>";
+	$outputLine .= "<td>$aRow[hash]</td>";
 	$outputLine .= "<td>$aRow[accountID]</td>";
 	echo $outputLine;
 }

@@ -1,4 +1,3 @@
-<!DOCTYPE HTML>
 <HTML>
 <head>
 
@@ -11,11 +10,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>Register</title>
 </head>
-<body class="w-75" style="margin:0 auto; background-image: url('sudoku-bg1.jpg')">
+<body class="w-75" style="margin:0 auto; background-image: url('img/sudoku-bg1.jpg')">
 <header>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand border border-dark" href="#">
-    <img src="logo.png" class="d-inline-block align-top img-fluid" alt="">
+    <img src="img/logo.png" class="d-inline-block align-top img-fluid" alt="">
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>

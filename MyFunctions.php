@@ -12,7 +12,6 @@ function getAccountDetails($db)
 //*********************************************************
 function getLogins($db)
 {
-
 	$sql = "select * from Login order by userName" ;
     $result = $db->query($sql);  
     return $result ;
@@ -30,14 +29,31 @@ function getBlogPosts($db)
 //*********************************************************
 function getAccountId($db, $userName, $password)
 {
-	$sql = "select * from Login where userName = '$userName' and userPassword = '$password'";
+	$sql = "select * from Login where userName = '$userName' and hash = '$password'";
 	$account = $db->query($sql);
 	$row = $account->fetch();
 	$result = $row['accountID'];
 	return $result;
 	
 }
-
+//*********************************************************
+function retrieveLogin($db, $userName)
+{
+	$sql = "select * from Login where userName = '$userName'";
+	$hash = $db->query($sql);
+	$row = $hash->fetch();
+	$result = $row['hash'];
+	return $result;
+}
+//*********************************************************
+function retrieveUserName($db, $theAccountID)
+{
+	$sql = "select * from Login where accountID = '$theAccountID'";
+	$theUserName = $db->query($sql);
+	$row = $theUserName->fetch();
+	$result = $row['userName'];
+	return $result;
+}
 //*********************************************************
 function verifyLogin($userName, $password)
 {
