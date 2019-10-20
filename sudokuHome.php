@@ -86,13 +86,6 @@ require 'db.php';
     <p class="card-text">Random Text</p>
   </div>
 </div>
-<div class="card" style="width: 18rem;margin: 2rem;">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    <p class="card-text">Random Text</p>
-  </div>
-</div>
 </div>
 </main>
 </body>

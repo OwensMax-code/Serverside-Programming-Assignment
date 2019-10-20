@@ -54,24 +54,4 @@ function retrieveUserName($db, $theAccountID)
 	$result = $row['userName'];
 	return $result;
 }
-//*********************************************************
-function verifyLogin($userName, $password)
-{
-	  $result = true;
-   if ($userName =='')
-   {
-        $result = false;
-        echo '<script language="javascript">';
-		echo 'alert("Please enter a username")';
-		echo '</script>';
-   }    
-   if ($password =='')
-   {
-        $result = false;
-        echo '<script language="javascript">';
-		echo 'alert("Please enter a password")';
-		echo '</script>';
-   }
-    return $result;
-}
 ?>

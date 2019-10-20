@@ -49,11 +49,15 @@ if (!isset($_SESSION['theAccountID']))
 </nav>
 </header>
 <main>
-<h1 class="display-5 text-center text-danger mt-3 mb-3">Your Profile</h1>
-<div class="d-flex flex-row justify-content-center">
-<div class="row bg-light w-50 p-3">
+<div class="d-flex flex-row justify-content-center mt-5">
+<div>
 <?php
 echo getUserProfile($db, $_SESSION['theAccountID']);
+?>
+</div>
+<div>
+<?php
+echo getUsersPosts($db, $userName);
 ?>
 </div>
 </div>

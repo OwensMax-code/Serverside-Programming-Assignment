@@ -67,6 +67,7 @@ $sql = "CREATE TABLE BlogPost (
 		postID INTEGER AUTO_INCREMENT,
 		postTitle VARCHAR(50) NOT NULL UNIQUE,
 		postContent VARCHAR(500) NOT NULL,
+		postDate DATE NOT NULL,
 		userName VARCHAR(50) NOT NULL,
 		PRIMARY KEY (postID),
 		FOREIGN KEY (userName)
@@ -79,6 +80,7 @@ $sql = "CREATE TABLE BlogComment (
 		commentID INTEGER AUTO_INCREMENT,
 		postID INTEGER NOT NULL,
 		commentContent VARCHAR(300) NOT NULL,
+		commentDate DATE NOT NULL,
 		userName VARCHAR(25) NOT NULL,
 		PRIMARY KEY (commentID),
 		FOREIGN KEY (postID)
@@ -132,29 +134,29 @@ $sql = "insert into AccountDetails values (null,'Spup','Malarky','$userName','$h
 $db->insertRow($sql);
 
 // blog post insertion
-$sql = 'insert into BlogPost values (null,"I love all the sirens","this is a great text box! I sure do love it! Man, ice creams are great.","AmitTheSlayer6969");';
+$sql = 'insert into BlogPost values (null,"I love all the sirens","this is a great text box! I sure do love it! Man, ice creams are great.","2018-05-22","AmitTheSlayer6969");';
 $db->insertRow($sql);
-$sql = 'insert into BlogPost values (null,"Amit is the best","Auckland has too many people. Ive almost had enough!","MrKansas");';
+$sql = 'insert into BlogPost values (null,"Amit is the best","Auckland has too many people. Ive almost had enough!","2018-05-22","MrKansas");';
 $db->insertRow($sql);
-$sql = 'insert into BlogPost values (null,"Please help; my teacher is trying to kill me","I genuinely think I am in extreme danger. send help","WheresMySuperSuit");';
+$sql = 'insert into BlogPost values (null,"Please help; my teacher is trying to kill me","I genuinely think I am in extreme danger. send help","2018-05-22","WheresMySuperSuit");';
 $db->insertRow($sql);
-$sql = 'insert into BlogPost values (null,"I lost my dog somewhere in the park","A group of angry cousins came at me with knives. Big troubles lie ahead.","WheresMySuperSuit");';
+$sql = 'insert into BlogPost values (null,"I lost my dog somewhere in the park","A group of angry cousins came at me with knives. Big troubles lie ahead.","2018-05-22","WheresMySuperSuit");';
 $db->insertRow($sql);
-$sql = 'insert into BlogPost values (null,"Good lord, this website!","This is by far the greatest website I have EVER seen. Keep up the A+ work! I am so happy whenever I visit this website.","MrKansas");';
+$sql = 'insert into BlogPost values (null,"Good lord, this website!","This is by far the greatest website I have EVER seen. Keep up the A+ work! I am so happy whenever I visit this website.","2018-05-22","MrKansas");';
 $db->insertRow($sql);
 
 // blog comment insertion
-$sql = 'insert into BlogComment values (null,2,"I agree with this post!","AmitTheSlayer6969");';
+$sql = 'insert into BlogComment values (null,2,"I agree with this post!","2018-05-22","AmitTheSlayer6969");';
 $db->insertRow($sql);
-$sql = 'insert into BlogComment values (null,3,"I am feeling ok with this post!","Snickerman");';
+$sql = 'insert into BlogComment values (null,3,"I am feeling ok with this post!","2018-05-22","Snickerman");';
 $db->insertRow($sql);
-$sql = 'insert into BlogComment values (null,3,"I am angry with this post!","WheresMySuperSuit");';
+$sql = 'insert into BlogComment values (null,3,"I am angry with this post!","2018-05-22","WheresMySuperSuit");';
 $db->insertRow($sql);
-$sql = 'insert into BlogComment values (null,1,"I am providing feedback to this post!","AmitTheSlayer6969");';
+$sql = 'insert into BlogComment values (null,1,"I am providing feedback to this post!","2018-05-22","AmitTheSlayer6969");';
 $db->insertRow($sql);
-$sql = 'insert into BlogComment values (null,1,"Lost my dog?","AmitTheSlayer6969");';
+$sql = 'insert into BlogComment values (null,1,"Lost my dog?","2018-05-22","AmitTheSlayer6969");';
 $db->insertRow($sql);
-$sql = 'insert into BlogComment values (null,1,"I disagree with this post!","AmitTheSlayer6969");';
+$sql = 'insert into BlogComment values (null,1,"I disagree with this post!","2018-05-22","AmitTheSlayer6969");';
 $db->insertRow($sql);
 
 require_once('displayTables.php');
