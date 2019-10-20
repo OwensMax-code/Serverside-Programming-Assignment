@@ -55,7 +55,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 												</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="#">
+												<a class="nav-link" href="userProfile.php">
 													<h3>Profile</h3>
 												</a>
 											</li>

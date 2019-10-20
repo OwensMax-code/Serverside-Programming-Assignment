@@ -21,11 +21,20 @@ function getLogins($db)
 function getBlogPosts($db)
 {
     
-    $sql = "select * from BlogPost order by postID" ;
+    $sql = "select * from BlogPost" ;
     $result = $db->query($sql);  
     return $result;
 }
 
+//*********************************************************
+function getBlogCommentCount($db, $thePostID)
+{
+	$sql = "SELECT COUNT(commentID) AS total FROM BlogComment WHERE postID = '$thePostID'";
+	$commentCount = $db->query($sql);  
+	$n = $commentCount->fetch();
+	$result = (int)$n['total'];
+    return $result;
+}
 //*********************************************************
 function getAccountId($db, $userName, $password)
 {
@@ -53,5 +62,21 @@ function retrieveUserName($db, $theAccountID)
 	$row = $theUserName->fetch();
 	$result = $row['userName'];
 	return $result;
+}
+//*********************************************************
+function usernameExists($db, $theUserName)
+{
+	$sql = "select count(userName) as total from Login where userName = '$theUserName'";
+	$theUserName = $db->query($sql);
+	$n = $theUserName->fetch();
+	$count = (int)$n['total'];
+	if ($count == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 ?>

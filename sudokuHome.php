@@ -5,6 +5,7 @@ if (isset($_GET["msg"]) && $_GET["msg"] == 'logout')
 	session_unset();
 }
 require_once 'myFunctions.php';
+require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
 ?>
@@ -56,37 +57,11 @@ require 'db.php';
 </nav>
 </header>
 <main>
-<h1 class="display-5 text-center text-danger mt-3 mb-3">Most Recent Posts</h1>
-<div class="overflow-auto bg-secondary justify-content-center" style="height: 75vh;overflow-y: scroll;width: 75%;margin: 0 auto;">
-<div class="card" style="width: 18rem;margin: 2rem;">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    <p class="card-text">Random Text</p>
-  </div>
-</div>
-<div class="card" style="width: 18rem;margin: 2rem;">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    <p class="card-text">Random Text</p>
-  </div>
-</div>
-<div class="card" style="width: 18rem;margin: 2rem;">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    <p class="card-text">Random Text</p>
-  </div>
-</div>
-<div class="card" style="width: 18rem;margin: 2rem;">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    <p class="card-text">Random Text</p>
-  </div>
-</div>
-</div>
+<h1 class="display-5 text-center text-danger mt-3 mb-1">Most Recent Posts</h1>
+<?php
+if (!isset($_SESSION['theAccountID'])){echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";} 
+echo getMostRecentPosts($db);
+?>
 </main>
 </body>
 

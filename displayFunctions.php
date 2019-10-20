@@ -43,16 +43,39 @@ function getUsersPosts ($db, $userName)
 		$output .= "<h1 class='display-5 text-center text-danger mt-3 mb-3'>Your Posts - $count total!</h1>";
 		while ($aRow = $accountInfo->fetch())
 		{
+			$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
 			$output .= "<div class='card' style='margin:2rem;'>
 					  <div class='card-body'>
 					  <h5 class'card-title'>$aRow[postTitle]</h5>
 					  <h6 class='card-subtitle mb-2 text-muted'>$aRow[userName]</h6>
-					  <h6 class='card-subtitle mb-2 text-muted'>$aRow[postDate]</h6>
+					  <h6 class='card-subtitle mb-2 text-muted'>Posted $aRow[postDate]</h6>
 					  <p class='card-text'>$aRow[postContent]</p>
+					  <h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
 					  </div>
 					  </div>";
 		}
 	}	
+	return $output;
+}
+function getMostRecentPosts ($db) 
+{
+	$sql = "select * from blogPost order by postDate desc";
+	$orderedPosts = $db->query($sql);
+	$output = "<div class='overflow-auto bg-secondary justify-content-center' style='height: 75vh;overflow-y: scroll;width: 75%;margin: 0 auto;'>";
+	while ($aRow = $orderedPosts->fetch())
+	{
+		$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
+		$output .= "<div class='card' style='margin:2rem;'>
+					<div class='card-body'>
+					<h5 class'card-title'>$aRow[postTitle]</h5>
+					<h6 class='card-subtitle mb-2 text-muted'>$aRow[userName]</h6>
+					<h6 class='card-subtitle mb-2 text-muted'>Posted $aRow[postDate]</h6>
+					<p class='card-text'>$aRow[postContent]</p>
+					<h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
+					</div>
+					</div>";
+	}	
+	$output .= "</div>";
 	return $output;
 }
 

@@ -138,11 +138,11 @@ $sql = 'insert into BlogPost values (null,"I love all the sirens","this is a gre
 $db->insertRow($sql);
 $sql = 'insert into BlogPost values (null,"Amit is the best","Auckland has too many people. Ive almost had enough!","2018-05-22","MrKansas");';
 $db->insertRow($sql);
-$sql = 'insert into BlogPost values (null,"Please help; my teacher is trying to kill me","I genuinely think I am in extreme danger. send help","2018-05-22","WheresMySuperSuit");';
+$sql = 'insert into BlogPost values (null,"Please help; my teacher is trying to kill me","I genuinely think I am in extreme danger. send help","2018-06-04","WheresMySuperSuit");';
 $db->insertRow($sql);
-$sql = 'insert into BlogPost values (null,"I lost my dog somewhere in the park","A group of angry cousins came at me with knives. Big troubles lie ahead.","2018-05-22","WheresMySuperSuit");';
+$sql = 'insert into BlogPost values (null,"I lost my dog somewhere in the park","A group of angry cousins came at me with knives. Big troubles lie ahead.","2019-05-22","WheresMySuperSuit");';
 $db->insertRow($sql);
-$sql = 'insert into BlogPost values (null,"Good lord, this website!","This is by far the greatest website I have EVER seen. Keep up the A+ work! I am so happy whenever I visit this website.","2018-05-22","MrKansas");';
+$sql = 'insert into BlogPost values (null,"Good lord, this website!","This is by far the greatest website I have EVER seen. Keep up the A+ work! I am so happy whenever I visit this website.","2018-05-08","MrKansas");';
 $db->insertRow($sql);
 
 // blog comment insertion
