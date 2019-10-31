@@ -36,7 +36,7 @@ if (!isset($_SESSION['theAccountID']))
         <a class="nav-link" href="sudokuHome.php"><h3>Home </h3><span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#"><h3>Posts</h3></a>
+        <a class="nav-link" href="posts.php"><h3>Posts</h3></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="userProfile.php"><h3>Profile</h3></a>
@@ -44,7 +44,8 @@ if (!isset($_SESSION['theAccountID']))
     </ul>
   </div>
   <?php 
-  echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";    
+  echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";  
+  echo "<a href='createPost.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Create Post!</button></a>";  
   ?>
 </nav>
 </header>

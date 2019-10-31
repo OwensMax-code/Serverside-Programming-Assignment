@@ -8,11 +8,11 @@ function getUserProfile ($db, $theAccountID)
 	{	
 		$output = "<h1 class='display-5 text-center text-danger mt-3 mb-3'>Your Profile</h1>
 				  <div class='row bg-light p-3 m-3'>
-				  <div class='col' style='background-color:#CDCDCD;'>
+				  <div class='col p-3' style='background-color:#CDCDCD;'>
 				  <h4><small class='text-muted p-1'>First Name:</small><br>$aRow[firstName]</h4><br>
 				  <h4><small class='text-muted p-1'>Last Name:</small><br>$aRow[lastName]</h4><br>
 				  <h4><small class='text-muted p-1'>Email Address:</small><br>$aRow[emailAddress]</h4></div>
-				  <div class='col' style='background-color:#D7D7D7;'>
+				  <div class='col p-3' style='background-color:#D7D7D7;'>
 				  <h4><small class='text-muted p-1'>Phone Number:</small><br>$aRow[phoneNo]</h4><br>
 				  <h4><small class='text-muted p-1'>Address Line 1:</small><br>$aRow[address1]</h4><br>
 				  <h4><small class='text-muted p-1'>Address Line 2:</small><br>$aRow[address2]</h4><br></div>
@@ -47,7 +47,6 @@ function getUsersPosts ($db, $userName)
 			$output .= "<div class='card' style='margin:2rem;'>
 					  <div class='card-body'>
 					  <h5 class'card-title'>$aRow[postTitle]</h5>
-					  <h6 class='card-subtitle mb-2 text-muted'>$aRow[userName]</h6>
 					  <h6 class='card-subtitle mb-2 text-muted'>Posted $aRow[postDate]</h6>
 					  <p class='card-text'>$aRow[postContent]</p>
 					  <h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
@@ -59,7 +58,7 @@ function getUsersPosts ($db, $userName)
 }
 function getMostRecentPosts ($db) 
 {
-	$sql = "select * from blogPost order by postDate desc";
+	$sql = "select * from blogPost where year(postDate) = year(curdate())";
 	$orderedPosts = $db->query($sql);
 	$output = "<div class='overflow-auto bg-secondary justify-content-center' style='height: 75vh;overflow-y: scroll;width: 75%;margin: 0 auto;'>";
 	while ($aRow = $orderedPosts->fetch())
@@ -68,8 +67,29 @@ function getMostRecentPosts ($db)
 		$output .= "<div class='card' style='margin:2rem;'>
 					<div class='card-body'>
 					<h5 class'card-title'>$aRow[postTitle]</h5>
-					<h6 class='card-subtitle mb-2 text-muted'>$aRow[userName]</h6>
-					<h6 class='card-subtitle mb-2 text-muted'>Posted $aRow[postDate]</h6>
+					<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
+					<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>
+					<p class='card-text'>$aRow[postContent]</p>
+					<h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
+					</div>
+					</div>";
+	}	
+	$output .= "</div>";
+	return $output;
+}
+function getAllPosts ($db) 
+{
+	$sql = "select * from blogPost";
+	$orderedPosts = $db->query($sql);
+	$output = "<div class='overflow-auto bg-secondary justify-content-center' style='height: 75vh;overflow-y: scroll;width: 75%;margin: 0 auto;'>";
+	while ($aRow = $orderedPosts->fetch())
+	{
+		$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
+		$output .= "<div class='card' style='margin:2rem;'>
+					<div class='card-body'>
+					<h5 class'card-title'>$aRow[postTitle]</h5>
+					<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
+					<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>
 					<p class='card-text'>$aRow[postContent]</p>
 					<h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
 					</div>

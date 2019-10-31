@@ -1,17 +1,23 @@
 <?php
 session_start();
-if (isset($_GET["msg"]) && $_GET["msg"] == 'logout')
-{
-	session_unset();
-}
 require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
+$userName = retrieveUserName($db, $_SESSION['theAccountID']); 
+if (!isset($_SESSION['theAccountID']))
+{
+	header('Location: sudokuLogin.php?msg=notLoggedIn');
+}
+if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
+{
+	$postTitle = $_POST['postTitle'];
+	$postContent = $_POST['postContent'];
+	AddBlogPost($db, $postTitle, $postContent, $userName);
+}
 ?>
 <HTML>
 <head>
-
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
@@ -19,7 +25,7 @@ require 'db.php';
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Home</title>
+  <title>Profile</title>
 </head>
 <body class="w-75" style="margin:0 auto; background-image: url('img/sudoku-bg1.jpg')">
 <header>
@@ -43,28 +49,26 @@ require 'db.php';
       </li>
     </ul>
   </div>
-  <div>
-  <?php
-  if ( isset ($_SESSION['theAccountID']))
-	{
-		$userName = retrieveUserName($db, $_SESSION['theAccountID']);
-		echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";
-		echo "<a href='createPost.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Create Post!</button></a>";
-	}
-	else 
-	{
-		echo "<a href='sudokuLogin.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Login/Signup!</button></a>";
-	}
-  ?> 
-  </div>
+  <?php 
+  echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";    
+  ?>
 </nav>
 </header>
 <main>
-<h1 class="display-5 text-center text-danger mt-3 mb-1">Posts from 2019</h1>
-<?php
-if (!isset($_SESSION['theAccountID'])){echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";} 
-echo getMostRecentPosts($db);
-?>
+<h1 class='display-5 text-center text-danger mt-3 mb-3'>Create Post</h1>
+<div class="d-flex flex-row justify-content-center">
+<form class="mt-3 p-3 w-50 bg-secondary" action="createPost.php" method="POST">
+  <div class="form-group">
+    <label for="postTitle">Post Title</label>
+    <input type="text" name="postTitle" class="form-control" id="postTitle" placeholder="I love books" required>
+  </div>
+  <div class="form-group">
+    <label for="postContent">Post Content</label>
+    <textarea class="form-control" name="postContent" id="postContent" rows="5" required></textarea>
+  </div>
+  <input class="btn btn-lg" type="submit">
+</form>
+</div>
 </main>
 </body>
 

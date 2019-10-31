@@ -19,7 +19,7 @@ require 'db.php';
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Home</title>
+  <title>All Posts</title>
 </head>
 <body class="w-75" style="margin:0 auto; background-image: url('img/sudoku-bg1.jpg')">
 <header>
@@ -60,10 +60,10 @@ require 'db.php';
 </nav>
 </header>
 <main>
-<h1 class="display-5 text-center text-danger mt-3 mb-1">Posts from 2019</h1>
+<h1 class="display-5 text-center text-danger mt-3 mb-1">All Posts</h1>
 <?php
 if (!isset($_SESSION['theAccountID'])){echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";} 
-echo getMostRecentPosts($db);
+echo getAllPosts($db);
 ?>
 </main>
 </body>
