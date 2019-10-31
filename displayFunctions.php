@@ -1,5 +1,4 @@
 <?php
-
 function getUserProfile ($db, $theAccountID)
 {
 	$sql = "select * from AccountDetails where accountID = '$theAccountID'";
@@ -40,63 +39,82 @@ function getUsersPosts ($db, $userName)
 	}
 	else
 	{
-		$output .= "<h1 class='display-5 text-center text-danger mt-3 mb-3'>Your Posts - $count total!</h1>";
+		$output .= "<h1 class='display-5 text-center mt-3 mb-3'>Your Posts - $count total!</h1>";
 		while ($aRow = $accountInfo->fetch())
 		{
 			$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
-			$output .= "<div class='card' style='margin:2rem;'>
-					  <div class='card-body'>
-					  <h5 class'card-title'>$aRow[postTitle]</h5>
-					  <h6 class='card-subtitle mb-2 text-muted'>Posted $aRow[postDate]</h6>
-					  <p class='card-text'>$aRow[postContent]</p>
-					  <h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
-					  </div>
-					  </div>";
+			$output .= generatePost($db, $postCommentCount, $aRow, $userName);
 		}
 	}	
 	return $output;
 }
-function getMostRecentPosts ($db) 
+
+function getPosts ($db, $theFilter, $theUserName) 
 {
-	$sql = "select * from blogPost where year(postDate) = year(curdate())";
+	$output = '<div class="d-flex flex-row justify-content-center">';
+	if ($theFilter == 'recent')
+	{
+		$sql = "select * from blogPost order by postDate desc";
+		$output .= '<h1 class="display-5 text-center text-danger mr-5">Most Recent Posts</h1>';
+	}
+	else if ($theFilter == 'oldest')
+	{
+		$sql = "select * from blogPost order by postDate asc";
+		$output .= '<h1 class="display-5 text-center text-danger mr-5">Oldest Posts</h1>';
+	}
+	else if ($theFilter == 'alpha')
+	{
+		$sql = "select * from blogPost order by postTitle asc";
+		$output .= '<h1 class="display-5 text-center text-danger mr-5">Posts in alphabetical Order</h1>';
+	}
+	else 
+	{
+		$sql = "select * from blogPost";
+		$output .= '<h1 class="display-5 text-center text-danger mr-5">All Posts</h1>';
+	}
+	$output .= '<div class="dropdown mt-2">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			More Options
+			</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			<a class="dropdown-item" href="posts.php">All Posts</a>
+			<a class="dropdown-item" href="posts.php?msg=recent">Most Recent Posts</a>
+			<a class="dropdown-item" href="posts.php?msg=oldest">Oldest Posts</a>
+			<a class="dropdown-item" href="posts.php?msg=alpha">Posts Alphabetically</a>
+			</div>
+			</div>
+			</div>';	
 	$orderedPosts = $db->query($sql);
-	$output = "<div class='overflow-auto bg-secondary justify-content-center' style='height: 75vh;overflow-y: scroll;width: 75%;margin: 0 auto;'>";
+	$output .= "<div class='overflow-auto bg-secondary' style='height: 75vh;overflow-y: scroll;width: 75%;margin:0 auto;'>";
 	while ($aRow = $orderedPosts->fetch())
 	{
 		$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
-		$output .= "<div class='card' style='margin:2rem;'>
-					<div class='card-body'>
-					<h5 class'card-title'>$aRow[postTitle]</h5>
-					<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
-					<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>
-					<p class='card-text'>$aRow[postContent]</p>
-					<h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
-					</div>
-					</div>";
-	}	
-	$output .= "</div>";
-	return $output;
-}
-function getAllPosts ($db) 
-{
-	$sql = "select * from blogPost";
-	$orderedPosts = $db->query($sql);
-	$output = "<div class='overflow-auto bg-secondary justify-content-center' style='height: 75vh;overflow-y: scroll;width: 75%;margin: 0 auto;'>";
-	while ($aRow = $orderedPosts->fetch())
-	{
-		$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
-		$output .= "<div class='card' style='margin:2rem;'>
-					<div class='card-body'>
-					<h5 class'card-title'>$aRow[postTitle]</h5>
-					<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
-					<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>
-					<p class='card-text'>$aRow[postContent]</p>
-					<h6 class='card-subtitle mb-2 text-muted'>Comments: $postCommentCount</h6>
-					</div>
-					</div>";
+		$output .= generatePost($db, $postCommentCount, $aRow, $theUserName);
 	}	
 	$output .= "</div>";
 	return $output;
 }
 
+function generatePost ($db, $newCommentCount, $newRow, $newUserName)
+{
+	$output = "<div class='card w-75' style='margin:5 auto;background-color:#CDCDCD;'>
+		<div class='card-body'>
+		<h5 class'card-title'>$newRow[postTitle]</h5>
+		<h6 class='card-subtitle mb-2 text-muted'>Posted by $newRow[userName]</h6>
+		<h6 class='card-subtitle mb-2 text-muted'>on $newRow[postDate]</h6>
+		<p class='card-text'>$newRow[postContent]</p>
+		<h6 class='card-subtitle mb-2 text-muted'>Comments: $newCommentCount</h6>
+		<a href='post.php?msg=$newRow[postID]' class='btn btn-secondary mr-1'>Visit Post</a>";
+	if ($newUserName == $newRow['userName']) 
+	{
+		$output .= "<a href='' class='btn btn-secondary ml-1'>Delete Post</a>";
+	}
+	$output .= "</div></div>";
+	return $output;
+}
+
+function deletePost ($db) 
+	{
+		
+	}
 ?>

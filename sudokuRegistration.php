@@ -1,3 +1,18 @@
+<?php
+session_start();
+require_once 'myFunctions.php';
+require_once 'displayFunctions.php';
+include_once 'MYSQLDB.php';
+require 'db.php';
+if (isset($_SESSION['theAccountID']))
+{
+	header('Location: sudokuHome.php');
+}
+else
+{
+	
+}
+?>
 <HTML>
 	<head>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">

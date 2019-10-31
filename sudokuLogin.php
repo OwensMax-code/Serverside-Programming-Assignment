@@ -3,6 +3,10 @@ session_start();
 require_once 'myFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
+if ( isset ($_SESSION['theAccountID']))
+{
+	header('Location: sudokuHome.php');
+}
 if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 {
 	$userName = $_POST['userName'];

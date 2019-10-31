@@ -50,13 +50,13 @@ if (!isset($_SESSION['theAccountID']))
 </nav>
 </header>
 <main>
-<div class="d-flex flex-row justify-content-center mt-5">
+<div class="d-flex flex-row justify-content-center mt-5" style="height:75%;">
 <div>
 <?php
 echo getUserProfile($db, $_SESSION['theAccountID']);
 ?>
 </div>
-<div>
+<div class='overflow-auto bg-secondary justify-content-center' style='overflow-y: scroll;width: 75%;margin: 0 auto;'>
 <?php
 echo getUsersPosts($db, $userName);
 ?>

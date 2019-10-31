@@ -8,6 +8,7 @@ require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
+$userName = retrieveUserName($db, $_SESSION['theAccountID']);
 ?>
 <HTML>
 <head>
@@ -47,7 +48,6 @@ require 'db.php';
   <?php
   if ( isset ($_SESSION['theAccountID']))
 	{
-		$userName = retrieveUserName($db, $_SESSION['theAccountID']);
 		echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";
 		echo "<a href='createPost.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Create Post!</button></a>";
 	}
@@ -60,12 +60,18 @@ require 'db.php';
 </nav>
 </header>
 <main>
-<h1 class="display-5 text-center text-danger mt-3 mb-1">All Posts</h1>
 <?php
-if (!isset($_SESSION['theAccountID'])){echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";} 
-echo getAllPosts($db);
+$filter = 'none';
+	if (!isset($_SESSION['theAccountID']))
+		{
+			echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";
+		} 
+	if (isset($_GET["msg"]))
+		{
+			$filter = $_GET["msg"];
+		}
+echo getPosts($db, $filter, $userName);
 ?>
 </main>
 </body>
-
 </HTML>

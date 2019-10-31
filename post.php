@@ -8,6 +8,7 @@ require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
+$userName = retrieveUserName($db, $_SESSION['theAccountID']);
 ?>
 <HTML>
 <head>
@@ -19,7 +20,7 @@ require 'db.php';
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Home</title>
+  <title>All Posts</title>
 </head>
 <body class="w-75" style="margin:0 auto; background-image: url('img/sudoku-bg1.jpg')">
 <header>
@@ -47,7 +48,6 @@ require 'db.php';
   <?php
   if ( isset ($_SESSION['theAccountID']))
 	{
-		$userName = retrieveUserName($db, $_SESSION['theAccountID']);
 		echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";
 		echo "<a href='createPost.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Create Post!</button></a>";
 	}
@@ -60,7 +60,15 @@ require 'db.php';
 </nav>
 </header>
 <main>
+<?php
+$filter = 'none';
+if (!isset($_SESSION['theAccountID'])){echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";} 
+if (isset($_GET["msg"]))
+	{
+		$filter = $_GET["msg"];
+	}
+echo getPosts($db, $filter, $userName);
+?>
 </main>
 </body>
-
 </HTML>
