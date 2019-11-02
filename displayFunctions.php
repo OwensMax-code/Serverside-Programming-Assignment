@@ -119,11 +119,11 @@ function getDeletePostButton($db, $theNewRow)
 {
 	$output = "<form action='posts.php' method='POST' class='mt-2'>
 				<p>
-				<a class='btn btn-danger' data-toggle='collapse' href='#deletePost' role='button' aria-expanded='false' aria-controls='deletePost'>
+				<a class='btn btn-danger' data-toggle='collapse' href='#deletePost$theNewRow[postID]' role='button' aria-expanded='false' aria-controls='deletePost$theNewRow[postID]'>
 				Delete Post
 				</a>
 				</p>
-				<div class='collapse' id='deletePost'>
+				<div class='collapse' id='deletePost$theNewRow[postID]'>
 				<div class='card card-body'>
 				<input type='hidden' name='postID' value='$theNewRow[postID]'>
 				<h5>Are you sure?</h5>
@@ -136,17 +136,35 @@ function getDeletePostButton($db, $theNewRow)
 
 function getDeleteCommentButton($db, $theNewRow)
 {
-	$output = "<form action='posts.php' method='POST' class='mt-2'>
+	$output = "<form action='post.php?msg=$theNewRow[postID]' method='POST' class='mt-2'>
 				<p>
-				<a class='btn btn-danger' data-toggle='collapse' href='#deleteComment' role='button' aria-expanded='false' aria-controls='deleteComment'>
+				<a class='btn btn-danger' data-toggle='collapse' href='#deleteComment$theNewRow[commentID]' role='button' aria-expanded='false' aria-controls='deleteComment$theNewRow[commentID]'>
 				Delete Comment
 				</a>
 				</p>
-				<div class='collapse' id='deleteComment'>
+				<div class='collapse' id='deleteComment$theNewRow[commentID]'>
 				<div class='card card-body'>
 				<input type='hidden' name='commentID' value='$theNewRow[commentID]'>
 				<h5>Are you sure?</h5>
 				<input type='submit' name='submitDelete' class='btn btn-danger w-25'>
+				</div>
+				</div>
+				</form>";
+	return $output;
+}
+
+function getAddCommentButton($db, $theNewRow)
+{
+	$output = "<form action='post.php?msg=$theNewRow[postID]' method='POST' class='mt-2'>
+				<p>
+				<a class='btn btn-secondary' data-toggle='collapse' href='#addComment' role='button' aria-expanded='false' aria-controls='addComment'>
+				Add Comment!
+				</a>
+				</p>
+				<div class='collapse' id='addComment'>
+				<div class='card card-body'>
+				<input type='textarea' rows='4' cols='50' name='commentContent' class='rounded' required>
+				<input type='submit' name='submitComment' class='btn btn-secondary w-25 mt-2'>
 				</div>
 				</div>
 				</form>";
@@ -166,8 +184,11 @@ function getSinglePost ($db, $thePostID, $newUserName)
 				<div class='card-body'>
 				<h5 class'card-title' style='color:#ffffff;'>$aRow[postContent]</h5>
 				<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
-				<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>
-				<a href='' class='btn btn-secondary ml-1'>Add Comment</a>";
+				<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>";
+		if ($newUserName != "")
+		{
+			$output .= 	getAddCommentButton($db, $aRow);
+		}
 		if ($newUserName == $aRow['userName']) 
 		{
 			$output .= getDeletePostButton($db, $aRow);

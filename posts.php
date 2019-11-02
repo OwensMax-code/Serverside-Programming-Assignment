@@ -15,8 +15,11 @@ $userName = retrieveUserName($db, $_SESSION['theAccountID']);
 }
 if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 {
-	$postID = $_POST['postID'];
-	deletePost($db, $postID);
+	if ( isset ($_POST['postID']))
+	{
+		$postID = $_POST['postID'];
+		deletePost($db, $postID);
+	}
 }
 ?>
 <HTML>
@@ -75,10 +78,6 @@ $filter = 'none';
 		{
 			echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";
 		} 
-	if (isset($_GET["msg"]) && $_GET["msg"] = 'pDeleted')
-		{
-			echo "<h5 class='text-danger text-center'>Post Deleted!</h5>";
-		}
 	if (isset($_GET["msg"]))
 		{
 			$filter = $_GET["msg"];

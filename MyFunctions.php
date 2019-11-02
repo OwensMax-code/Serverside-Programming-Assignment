@@ -27,9 +27,15 @@ function getBlogPosts($db)
 }
 
 //*********************************************************
-function AddBlogPost($db, $newPostTitle, $newPostContent, $newUserName) 
+function addBlogPost($db, $newPostTitle, $newPostContent, $newUserName) 
 {
 	$sql = "insert into BlogPost values (null,'$newPostTitle','$newPostContent',CURDATE(),'$newUserName')";
+	$db->query($sql);
+}
+//*********************************************************
+function addComment($db, $newPostID, $newCommentContent, $newUserName) 
+{
+	$sql = "insert into BlogComment values (null, '$newPostID', '$newCommentContent', CURDATE(), '$newUserName')";
 	$db->query($sql);
 }
 //*********************************************************
@@ -52,7 +58,8 @@ function deletePost ($db, $thePostID)
 //*********************************************************
 function deleteComment ($db, $theCommentID) 
 {
-		
+	$sql = "delete from BlogComment where commentID = '$theCommentID'";
+	$db->query($sql);
 }
 //*********************************************************
 function checkPostOwnership ($db, $newUserName, $newPostID)

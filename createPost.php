@@ -19,7 +19,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 	}
 	else
 	{
-		AddBlogPost($db, $postTitle, $postContent, $userName);	
+		addBlogPost($db, $postTitle, $postContent, $userName);	
 	}
 }
 ?>

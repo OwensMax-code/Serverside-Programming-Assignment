@@ -10,6 +10,17 @@ if ( isset ( $_SESSION['theAccountID'] ) )
 {
 $userName = retrieveUserName($db, $_SESSION['theAccountID']);
 }
+if (isset($_POST['commentID']))
+{
+	$commentID = $_POST['commentID'];
+	deleteComment($db, $commentID);
+	header("Location: post.php?msg=$postID");
+}
+if (isset($_POST['commentContent']))
+{
+	$commentContent = $_POST['commentContent'];
+	addComment($db, $postID, $commentContent, $userName);
+}
 ?>
 <HTML>
 <head>
