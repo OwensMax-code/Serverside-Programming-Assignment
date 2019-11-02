@@ -34,7 +34,7 @@ function getUsersPosts ($db, $userName)
 		$output .= "<h1 class='display-5 text-center text-danger mt-3 mb-3'>Your Posts - $count total!</h1>
 					<div class='d-flex flex-column justify-content-center bg-light p-3 m-3'>
 					<h5>Would you like to create one?</h5><br>
-					<a href='' class='btn btn-secondary btn-lg'>Create Post!</a>
+					<a href='createPost.php' class='btn btn-secondary btn-lg'>Create Post!</a>
 					</div>";
 	}
 	else
@@ -72,7 +72,8 @@ function getPosts ($db, $theFilter, $theUserName)
 		$sql = "select * from blogPost";
 		$output .= '<h1 class="display-5 text-center text-danger mr-5">All Posts</h1>';
 	}
-	$output .= '<div class="dropdown mt-2">
+	$output .=
+			'<div class="dropdown mt-2">
 			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			More Options
 			</button>
@@ -97,24 +98,113 @@ function getPosts ($db, $theFilter, $theUserName)
 
 function generatePost ($db, $newCommentCount, $newRow, $newUserName)
 {
-	$output = "<div class='card w-75' style='margin:5 auto;background-color:#CDCDCD;'>
+	$output =
+		"<div class='card w-75' style='margin:5 auto;background-color:#CDCDCD;'>
 		<div class='card-body'>
 		<h5 class'card-title'>$newRow[postTitle]</h5>
 		<h6 class='card-subtitle mb-2 text-muted'>Posted by $newRow[userName]</h6>
 		<h6 class='card-subtitle mb-2 text-muted'>on $newRow[postDate]</h6>
 		<p class='card-text'>$newRow[postContent]</p>
 		<h6 class='card-subtitle mb-2 text-muted'>Comments: $newCommentCount</h6>
-		<a href='post.php?msg=$newRow[postID]' class='btn btn-secondary mr-1'>Visit Post</a>";
+		<a href='post.php?msg=$newRow[postID]' class='btn btn-secondary mr-1'>View Post</a>";
 	if ($newUserName == $newRow['userName']) 
 	{
-		$output .= "<a href='' class='btn btn-secondary ml-1'>Delete Post</a>";
+		$output .=	getDeletePostButton($db, $newRow);			
 	}
 	$output .= "</div></div>";
 	return $output;
 }
 
-function deletePost ($db) 
+function getDeletePostButton($db, $theNewRow)
+{
+	$output = "<form action='posts.php' method='POST' class='mt-2'>
+				<p>
+				<a class='btn btn-danger' data-toggle='collapse' href='#deletePost' role='button' aria-expanded='false' aria-controls='deletePost'>
+				Delete Post
+				</a>
+				</p>
+				<div class='collapse' id='deletePost'>
+				<div class='card card-body'>
+				<input type='hidden' name='postID' value='$theNewRow[postID]'>
+				<h5>Are you sure?</h5>
+				<input type='submit' name='submitDelete' class='btn btn-danger w-25'>
+				</div>
+				</div>
+				</form>";
+	return $output;
+}
+
+function getDeleteCommentButton($db, $theNewRow)
+{
+	$output = "<form action='posts.php' method='POST' class='mt-2'>
+				<p>
+				<a class='btn btn-danger' data-toggle='collapse' href='#deleteComment' role='button' aria-expanded='false' aria-controls='deleteComment'>
+				Delete Comment
+				</a>
+				</p>
+				<div class='collapse' id='deleteComment'>
+				<div class='card card-body'>
+				<input type='hidden' name='commentID' value='$theNewRow[commentID]'>
+				<h5>Are you sure?</h5>
+				<input type='submit' name='submitDelete' class='btn btn-danger w-25'>
+				</div>
+				</div>
+				</form>";
+	return $output;
+}
+
+function getSinglePost ($db, $thePostID, $newUserName) 
+{
+	$sql = "select * from blogPost where postID = '$thePostID'";
+	$thePost = $db->query($sql);
+	$output = "";
+	while ($aRow = $thePost->fetch())
 	{
-		
+		$output .=
+				"<h1 class='text-center text-danger display-5'>$aRow[postTitle] - Posted by $aRow[userName]</h1>
+				<div class='card w-50 bg-dark' style='margin:5 auto;'>
+				<div class='card-body'>
+				<h5 class'card-title' style='color:#ffffff;'>$aRow[postContent]</h5>
+				<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
+				<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>
+				<a href='' class='btn btn-secondary ml-1'>Add Comment</a>";
+		if ($newUserName == $aRow['userName']) 
+		{
+			$output .= getDeletePostButton($db, $aRow);
+		}
 	}
+	if (getBlogCommentCount($db, $thePostID) != 0)
+	{
+		$output .= '</div></div><h1 class="display-5 text-center text-danger mr-5">Comments:</h1>';
+		$output .= getPostComments($db, $thePostID, $newUserName);
+	}
+	else 
+	{
+		$output .= "</div></div><h1 class='text-center text-danger display-5'>No Comments :(</h1>";
+	}
+	return $output;
+}
+
+function getPostComments ($db, $thePostID, $theUserName)
+{
+	$output = "";
+	$sql = "select * from BlogComment where postID = $thePostID order by commentDate desc";
+	$theComments = $db->query($sql);
+	while ($aRow = $theComments->fetch())
+	{
+		$output .=
+				"<div class='card w-50' style='margin:5 auto;background-color:#CDCDCD;'>
+				<div class='card-body'>
+				<h5 class'card-title'>$aRow[commentContent]</h5>
+				<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
+				<h6 class='card-subtitle mb-2 text-muted'>on $aRow[commentDate]</h6>";
+		if ($theUserName == $aRow['userName'])
+		{
+			$output .= getDeleteCommentButton($db, $aRow);
+		}
+		$output .= "</div></div>";
+	}
+	return $output;
+}
+
 ?>

@@ -60,6 +60,16 @@ require 'db.php';
 </nav>
 </header>
 <main>
+<div class="d-flex flex-column justify-content-center mt-5">
+<h1 class="display-5 text-center text-danger">Welcome to Sudoku 'R' Us!</h1>
+<div class="w-50 border border-dark mb-2" style="margin:0 auto;background-color:#CDCDCD">
+<h5 class="p-2">This is a website for sharing your special sudoku experiences with friends, family, and random people you met on the internet. Please keep all discussions civil!</h5>
+</div>
+<div class="d-flex justify-content-center" id="button box">
+<a href='sudokuLogin.php' class='btn btn-secondary mr-2'>Login/Signup!</a>
+<a href='posts.php' class='btn btn-secondary ml-2'>View Posts!</a>
+</div>
+</div>
 </main>
 </body>
 

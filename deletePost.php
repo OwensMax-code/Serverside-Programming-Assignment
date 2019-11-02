@@ -4,23 +4,19 @@ require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
-$userName = retrieveUserName($db, $_SESSION['theAccountID']); 
 if (!isset($_SESSION['theAccountID']))
 {
 	header('Location: sudokuLogin.php?msg=notLoggedIn');
 }
-if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
+$userName = retrieveUserName($db, $_SESSION['theAccountID']);
+if (!isset($_GET['msg']))
 {
-	$postTitle = $_POST['postTitle'];
-	$postContent = $_POST['postContent'];
-	if (checkBlogPostTitle($db, $postTitle) != 0)
-	{
-		header('Location: createPost.php?msg=badTitle');
-	}
-	else
-	{
-		AddBlogPost($db, $postTitle, $postContent, $userName);	
-	}
+	header('Location: posts.php');
+}
+$postID = $_GET['msg']; // works
+if (!checkPostOwnership($db, $userName, $postID))
+{
+	header('Location: posts.php');	
 }
 ?>
 <HTML>
@@ -62,24 +58,11 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 </nav>
 </header>
 <main>
-<h1 class='display-5 text-center text-danger mt-3 mb-3'>Create Post</h1>
-<div class="d-flex flex-column justify-content-center">
-<?php
-if ( isset ( $_GET['msg']) && $_GET["msg"] == 'badTitle')
-{
-	echo "<h1 class='display-5 text-center text-danger mt-3 mb-3'>Post title in use. Please try another!</h1>";
-}
-?>
-<form class="mt-3 p-3 w-50 bg-secondary" action="createPost.php" method="POST" style="margin:0 auto;">
-  <div class="form-group">
-    <label for="postTitle">Post Title</label>
-    <input type="text" name="postTitle" class="form-control" id="postTitle" placeholder="I love books" required>
-  </div>
-  <div class="form-group">
-    <label for="postContent">Post Content</label>
-    <textarea class="form-control" name="postContent" id="postContent" rows="5" required></textarea>
-  </div>
-  <input class="btn btn-lg" type="submit">
+<h1 class="display-5 text-center text-danger mt-1">Are you sure you want to delete your post?</h1>
+<div class="d-flex flex-row justify-content-center">
+<form action="deletePost.php" method="POST">
+<button type="submit" name="delete" id="delete" value="delete" class='btn btn-secondary btn-lg mr-5'>Delete Post - I hate it.</button>
+<a href='posts.php' class='btn btn-secondary btn-lg ml-5'>Keep Post - I cannot make up my mind. I am a mess.</a>
 </form>
 </div>
 </main>

@@ -30,8 +30,43 @@ function getBlogPosts($db)
 function AddBlogPost($db, $newPostTitle, $newPostContent, $newUserName) 
 {
 	$sql = "insert into BlogPost values (null,'$newPostTitle','$newPostContent',CURDATE(),'$newUserName')";
-	$db->insertRow($sql);
-	echo "the record was inserted";
+	$db->query($sql);
+}
+//*********************************************************
+function checkBlogPostTitle($db, $newPostTitle)
+{
+	$sql = "select COUNT(postID) as total from BlogPost where postTitle = '$newPostTitle'";
+	$postCount = $db->query($sql);
+	$n = $postCount->fetch();
+	$result = (int)$n['total'];
+    return $result;	
+}
+//*********************************************************
+function deletePost ($db, $thePostID) 
+{
+	$sql = "delete from BlogComment where postID = '$thePostID'";
+	$db->query($sql);
+	$sql = "delete from BlogPost where postID = '$thePostID'";
+	$db->query($sql);
+}
+//*********************************************************
+function deleteComment ($db, $theCommentID) 
+{
+		
+}
+//*********************************************************
+function checkPostOwnership ($db, $newUserName, $newPostID)
+{
+	$isOwnPost = false;
+	$sql = "select count(postID) as total from BlogPost where userName = '$newUserName' and postID = '$newPostID'";
+	$postCount = $db->query($sql);
+	$n = $postCount->fetch();
+	$result = (int)$n['total'];
+	if ($result != 0)
+	{
+		$isOwnPost = true;
+	}
+	return $isOwnPost;
 }
 //*********************************************************
 function getBlogCommentCount($db, $thePostID)

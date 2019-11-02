@@ -1,14 +1,15 @@
 <?php
 session_start();
-if (isset($_GET["msg"]) && $_GET["msg"] == 'logout')
-{
-	session_unset();
-}
 require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
+$postID = $_GET['msg'];
+$userName = "";
+if ( isset ( $_SESSION['theAccountID'] ) ) 
+{
 $userName = retrieveUserName($db, $_SESSION['theAccountID']);
+}
 ?>
 <HTML>
 <head>
@@ -61,13 +62,7 @@ $userName = retrieveUserName($db, $_SESSION['theAccountID']);
 </header>
 <main>
 <?php
-$filter = 'none';
-if (!isset($_SESSION['theAccountID'])){echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";} 
-if (isset($_GET["msg"]))
-	{
-		$filter = $_GET["msg"];
-	}
-echo getPosts($db, $filter, $userName);
+echo getSinglePost($db, $postID, $userName);
 ?>
 </main>
 </body>

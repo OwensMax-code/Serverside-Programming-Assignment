@@ -8,7 +8,16 @@ require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
+$userName = "";
+if ( isset ( $_SESSION['theAccountID'] ) ) 
+{
 $userName = retrieveUserName($db, $_SESSION['theAccountID']);
+}
+if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
+{
+	$postID = $_POST['postID'];
+	deletePost($db, $postID);
+}
 ?>
 <HTML>
 <head>
@@ -66,6 +75,10 @@ $filter = 'none';
 		{
 			echo "<h5 class='text-danger text-center'>Please login to comment/post all on your own!</h5>";
 		} 
+	if (isset($_GET["msg"]) && $_GET["msg"] = 'pDeleted')
+		{
+			echo "<h5 class='text-danger text-center'>Post Deleted!</h5>";
+		}
 	if (isset($_GET["msg"]))
 		{
 			$filter = $_GET["msg"];
