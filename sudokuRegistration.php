@@ -8,9 +8,21 @@ if (isset($_SESSION['theAccountID']))
 {
 	header('Location: sudokuHome.php');
 }
-else
+if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 {
-	
+	$userName = sanitiseText($db, $_POST['userName']);
+	$password = $_POST['userPassword'];
+	$login = $userName . $password;
+	$hash = password_hash($login, PASSWORD_DEFAULT);
+	$firstName = $_POST['firstName'];
+	$lastName = $_POST['lastName'];
+	$emailAddress = $_POST['emailAddress'];
+	$phoneNo = $_POST['phoneNo'];
+	$dateOfBirth = $_POST['dateOfBirth'];
+	$address1 = $_POST['address1'];
+	$address2 = $_POST['address2'];
+	addAccount($db, $firstName, $lastName, $userName, $hash, $emailAddress, $dateOfBirth, $phoneNo, $address1, $address2);
+	header('Location: sudokuLogin.php?msg=AccCreated');
 }
 ?>
 <HTML>
@@ -61,29 +73,39 @@ else
 							<main>
 								<div class="d-flex flex-column justify-content-center">
 									<h1 class="display-5 text-center text-danger mt-3 mb-3">Registration!</h1>
-									<form class="w-50 border rounded border-dark bg-light text-center" style="margin:0 auto;padding:1rem;">
+									<form class="w-50 border rounded border-dark bg-light text-center" style="margin:0 auto;padding:1rem;" action="sudokuRegistration.php" method="POST">
 										<div class="form-row">
 											<div class="form-group col-md-6">
 												<label for="userName">Desired Username</label>
-												<input type="text" name="userName" class="form-control" id="userName" placeholder="user name">
+												<input type="text" name="userName" class="form-control" id="userName" placeholder="user name" required>
 												</div>
 												<div class="form-group col-md-6">
 													<label for="userPassword">Desired Password</label>
-													<input type="password" name="userPassword" class="form-control" id="userPassword" placeholder="Password">
+													<input type="password" name="userPassword" class="form-control" id="userPassword" placeholder="Password" required>
+													</div>
+												</div>
+												<div class="form-row">
+											<div class="form-group col-md-6">
+												<label for="userName">First Name</label>
+												<input type="text" name="firstName" class="form-control" id="firstName" placeholder="First Name" required>
+												</div>
+												<div class="form-group col-md-6">
+													<label for="lastName">Last Name</label>
+													<input type="text" name="lastName" class="form-control" id="lastName" placeholder="Last Name" required>
 													</div>
 												</div>
 												<div class="form-group">
 													<label for="emailAddress">Email Address</label>
-													<input type="email" name="emailAddress" class="form-control" id="emailAddress" placeholder="david@example.com">
+													<input type="email" name="emailAddress" class="form-control" id="emailAddress" placeholder="david@example.com" required>
 														<label for="inputAddress">Address</label>
-														<input type="text" name = "address1" class="form-control" id="inputAddress" placeholder="1234 Main St">
-															<label for="inputAddress2">Address 2</label>
-															<input type="text" name="address2" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+														<input type="text" name = "address1" class="form-control" id="address1" placeholder="1234 Main St">
+															<label for="address2">Address 2</label>
+															<input type="text" name="address2" class="form-control" id="address2" placeholder="Apartment, studio, or floor">
 															</div>
 															<div class="form-row">
 																<div class="form-group col-md-6">
 																	<label for="dateOfBirth">Date of Birth</label>
-																	<input type="date" name="dateOfBirth" class="form-control" id="dateOfBirth">
+																	<input type="date" name="dateOfBirth" class="form-control" id="dateOfBirth" required>
 																	</div>
 																	<div class="form-group col-md-6">
 																		<label for="phoneNo">Phone Number</label>

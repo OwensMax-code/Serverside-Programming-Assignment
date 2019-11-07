@@ -5,6 +5,10 @@ require_once 'displayFunctions.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
 $postID = $_GET['msg'];
+if (checkPostExists($db, $postID))
+{
+	header('Location: posts.php');
+}
 $userName = "";
 if ( isset ( $_SESSION['theAccountID'] ) ) 
 {

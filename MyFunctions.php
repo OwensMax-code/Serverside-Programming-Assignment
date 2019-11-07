@@ -19,23 +19,42 @@ function getLogins($db)
 
 //*********************************************************
 function getBlogPosts($db)
-{
-    
+{   
     $sql = "select * from BlogPost" ;
     $result = $db->query($sql);  
     return $result;
 }
-
 //*********************************************************
 function addBlogPost($db, $newPostTitle, $newPostContent, $newUserName) 
 {
-	$sql = "insert into BlogPost values (null,'$newPostTitle','$newPostContent',CURDATE(),'$newUserName')";
+	$thePostTitle = sanitiseText($db, $newPostTitle);
+	$thePostContent = sanitiseText($db, $newPostContent);
+	$sql = "insert into BlogPost values (null,'$thePostTitle','$thePostContent',CURDATE(),'$newUserName')";
 	$db->query($sql);
 }
 //*********************************************************
 function addComment($db, $newPostID, $newCommentContent, $newUserName) 
 {
-	$sql = "insert into BlogComment values (null, '$newPostID', '$newCommentContent', CURDATE(), '$newUserName')";
+	$theCommentContent = sanitiseText($db, $newCommentContent);
+	$sql = "insert into BlogComment values (null, '$newPostID', '$theCommentContent', CURDATE(), '$newUserName')";
+	$db->query($sql);
+}
+//*********************************************************
+function addAccount($db, $newFirstName, $newLastName, $newUserName, $newHash, $newEmail, $newDateOfBirth, $newPhoneNo, $newAddress1, $newAddress2) 
+{
+	$theDateOfBirth = sanitiseDate($newDateOfBirth);
+	$theAddress1 = setEmptyRow($newAddress1);
+	$theAddress2 = setEmptyRow($newAddress2);
+	$thePhoneNo = setEmptyRow($newPhoneNo);
+	
+	$newFirstName = sanitiseText($db, $newFirstName);
+	$newLastName = sanitiseText($db, $newLastName);
+	$theUserName = sanitiseText($db, $newUserName);
+	$theEmailAddress = sanitiseText($db, $newEmail);
+	$theAddress1 = sanitiseText($db, $theAddress1);
+	$theAddress2 = sanitiseText($db, $theAddress2);
+	
+	$sql = "insert into AccountDetails values (null, '$newFirstName','$newLastName','$theUserName','$newHash','$newEmail','$theDateOfBirth','$thePhoneNo','$theAddress1','$theAddress2')";
 	$db->query($sql);
 }
 //*********************************************************
@@ -46,6 +65,20 @@ function checkBlogPostTitle($db, $newPostTitle)
 	$n = $postCount->fetch();
 	$result = (int)$n['total'];
     return $result;	
+}
+//*********************************************************
+function checkPostExists($db, $newPostID)
+{
+	$exists = false;
+	$sql = "select count(postID) as total from BlogPost where postID = '$newPostID'";
+	$thePostID = $db->query($sql);
+	$n = $thePostID->fetch();
+	$count = (int)$n['total'];
+	if ($count == 0)
+	{
+		$exists = true;
+	}
+	return $exists;
 }
 //*********************************************************
 function deletePost ($db, $thePostID) 
@@ -60,6 +93,30 @@ function deleteComment ($db, $theCommentID)
 {
 	$sql = "delete from BlogComment where commentID = '$theCommentID'";
 	$db->query($sql);
+}
+//*********************************************************
+function setEmptyRow($newValue)
+{
+	$output = $newValue;
+	if ($newValue == "")
+	{
+		$output = "No Info Given.";
+	}
+	return $output;
+}
+//*********************************************************
+function sanitiseDate($newDateOfBirth)
+{
+	return strval($newDateOfBirth);
+}
+//*********************************************************
+function sanitiseText($db, $newText)
+{
+	$output = strip_tags($newText);
+	$output = htmlspecialchars($output);
+	$output = htmlentities($output);
+	$output = mysqli_real_escape_string($db->getConnection(),$output);
+	return $output;
 }
 //*********************************************************
 function checkPostOwnership ($db, $newUserName, $newPostID)

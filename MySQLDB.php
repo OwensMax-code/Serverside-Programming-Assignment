@@ -42,6 +42,11 @@ class MySQL
 			}
 		}
      
+		public function getConnection()
+		
+		{
+			return $this->dbConn;
+		}
 
 		function dropDatabase()
 		{
@@ -179,11 +184,6 @@ class MySQLResult
 
     function insertID()
     {
-            /**
-            * returns the ID of the last row inserted
-            * @return  int
-            * @access  public
-            */
           return mysqli_insert_id( $this->mysql->dbConn );
     }
 
