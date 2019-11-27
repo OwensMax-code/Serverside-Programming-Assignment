@@ -33,10 +33,33 @@ function addBlogPost($db, $newPostTitle, $newPostContent, $newUserName)
 	$db->query($sql);
 }
 //*********************************************************
+function editBlogPost($db, $newPostContent, $newUserName) 
+{
+	$thePostContent = sanitiseText($db, $newPostContent);
+	$sql = "update BlogPost set postContent = '$newPostContent' where userName = '$newUserName'";
+	$db->query($sql);
+}
+//*********************************************************
 function addComment($db, $newPostID, $newCommentContent, $newUserName) 
 {
 	$theCommentContent = sanitiseText($db, $newCommentContent);
 	$sql = "insert into BlogComment values (null, '$newPostID', '$theCommentContent', CURDATE(), '$newUserName')";
+	$db->query($sql);
+}
+//*********************************************************
+function likePost($db, $newPostID, $newUserName)
+{
+	$sql = "delete from PostDislikes where postID = '$newPostID' and userName = '$newUserName'";
+	$db->query($sql);
+	$sql = "insert into PostLikes values (null, '$newPostID', '$newUserName')";
+	$db->query($sql);
+}
+//*********************************************************
+function dislikePost($db, $newPostID, $newUserName)
+{
+	$sql = "delete from PostLikes where postID = '$newPostID' and userName = '$newUserName'";
+	$db->query($sql);
+	$sql = "insert into PostDislikes values (null, '$newPostID', '$newUserName')";
 	$db->query($sql);
 }
 //*********************************************************
@@ -84,6 +107,10 @@ function checkPostExists($db, $newPostID)
 function deletePost ($db, $thePostID) 
 {
 	$sql = "delete from BlogComment where postID = '$thePostID'";
+	$db->query($sql);
+	$sql = "delete from PostLikes where postID = '$thePostID'";
+	$db->query($sql);
+	$sql = "delete from PostDislikes where postID = '$thePostID'";
 	$db->query($sql);
 	$sql = "delete from BlogPost where postID = '$thePostID'";
 	$db->query($sql);
@@ -140,6 +167,24 @@ function getBlogCommentCount($db, $thePostID)
 	$n = $commentCount->fetch();
 	$result = (int)$n['total'];
     return $result;
+}
+//*********************************************************
+function getBlogPostLikes($db, $thePostID)
+{
+	$sql = "SELECT COUNT(likeID) as total FROM PostLikes WHERE postID = '$thePostID'";
+	$likeCount = $db->query($sql);
+	$n = $likeCount->fetch();
+	$result = (int)$n['total'];
+	return $result;
+}
+//*********************************************************
+function getBlogPostDislikes($db, $thePostID)
+{
+	$sql = "SELECT COUNT(dislikeID) as total FROM PostDislikes WHERE postID = '$thePostID'";
+	$dislikeCount = $db->query($sql);
+	$n = $dislikeCount->fetch();
+	$result = (int)$n['total'];	
+	return $result;
 }
 //*********************************************************
 function getAccountId($db, $userName, $password)

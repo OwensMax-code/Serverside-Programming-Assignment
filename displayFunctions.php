@@ -42,8 +42,10 @@ function getUsersPosts ($db, $userName)
 		$output .= "<h1 class='display-5 text-center mt-3 mb-3'>Your Posts - $count total!</h1>";
 		while ($aRow = $accountInfo->fetch())
 		{
+			$postLikeCount = getBlogPostLikes($db, $aRow['postID']);
+			$postDislikeCount = getBlogPostDislikes($db, $aRow['postID']);
 			$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
-			$output .= generatePost($db, $postCommentCount, $aRow, $userName);
+			$output .= generatePost($db, $postCommentCount,$postLikeCount, $postDislikeCount, $aRow, $userName);
 		}
 	}	
 	return $output;
@@ -52,10 +54,10 @@ function getUsersPosts ($db, $userName)
 function getPosts ($db, $theFilter, $theUserName) 
 {
 	$output = '<div class="d-flex flex-row justify-content-center">';
-	if ($theFilter == 'recent')
+	if ($theFilter == 'all')
 	{
-		$sql = "select * from blogPost order by postDate desc";
-		$output .= '<h1 class="display-5 text-center text-danger mr-5">Most Recent Posts</h1>';
+		$sql = "select * from blogPost";
+		$output .= '<h1 class="display-5 text-center text-danger mr-5">All Posts</h1>';
 	}
 	else if ($theFilter == 'oldest')
 	{
@@ -69,8 +71,8 @@ function getPosts ($db, $theFilter, $theUserName)
 	}
 	else 
 	{
-		$sql = "select * from blogPost";
-		$output .= '<h1 class="display-5 text-center text-danger mr-5">All Posts</h1>';
+		$sql = "select * from blogPost order by postDate desc";
+		$output .= '<h1 class="display-5 text-center text-danger mr-5">Most Recent Posts</h1>';
 	}
 	$output .=
 			'<div class="dropdown mt-2">
@@ -79,7 +81,7 @@ function getPosts ($db, $theFilter, $theUserName)
 			</button>
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 			<a class="dropdown-item" href="posts.php">All Posts</a>
-			<a class="dropdown-item" href="posts.php?msg=recent">Most Recent Posts</a>
+			<a class="dropdown-item" href="posts.php?msg=all">Most Recent Posts</a>
 			<a class="dropdown-item" href="posts.php?msg=oldest">Oldest Posts</a>
 			<a class="dropdown-item" href="posts.php?msg=alpha">Posts Alphabetically</a>
 			</div>
@@ -89,14 +91,16 @@ function getPosts ($db, $theFilter, $theUserName)
 	$output .= "<div class='overflow-auto bg-secondary' style='height: 75vh;overflow-y: scroll;width: 75%;margin:0 auto;'>";
 	while ($aRow = $orderedPosts->fetch())
 	{
+		$postLikeCount = getBlogPostLikes($db, $aRow['postID']);
+		$postDislikeCount = getBlogPostDislikes($db, $aRow['postID']);
 		$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
-		$output .= generatePost($db, $postCommentCount, $aRow, $theUserName);
+		$output .= generatePost($db, $postCommentCount, $postLikeCount, $postDislikeCount, $aRow, $theUserName);
 	}	
 	$output .= "</div>";
 	return $output;
 }
 
-function generatePost ($db, $newCommentCount, $newRow, $newUserName)
+function generatePost ($db, $newCommentCount, $newLikeCount, $newDislikeCount, $newRow, $newUserName)
 {
 	$output =
 		"<div class='card w-75' style='margin:5 auto;background-color:#CDCDCD;'>
@@ -106,7 +110,8 @@ function generatePost ($db, $newCommentCount, $newRow, $newUserName)
 		<h6 class='card-subtitle mb-2 text-muted'>on $newRow[postDate]</h6>
 		<p class='card-text'>$newRow[postContent]</p>
 		<h6 class='card-subtitle mb-2 text-muted'>Comments: $newCommentCount</h6>
-		<a href='post.php?msg=$newRow[postID]' class='btn btn-secondary mr-1'>View Post</a>";
+		<h6 class='card-subtitle mb-2 text-muted'>Likes: $newLikeCount Dislikes: $newDislikeCount</h6>
+		<a href='post.php?msg=$newRow[postID]' class='btn btn-secondary mr-1'>View Post for Options</a>";
 	if ($newUserName == $newRow['userName']) 
 	{
 		$output .=	getDeletePostButton($db, $newRow);			
@@ -115,9 +120,51 @@ function generatePost ($db, $newCommentCount, $newRow, $newUserName)
 	return $output;
 }
 
+function getLikePostButton($db, $theNewRow, $newUserName, $newPostID)
+{
+	$sql = "select count(postID) as total from PostLikes where userName = '$newUserName' and postID = $newPostID";
+	$count = $db->query($sql);
+	$n = $count->fetch();
+	$count = (int)$n['total'];
+	if ($count == 0)
+	{
+		$output = 
+		"<form action='post.php?msg=$newPostID' method='POST'>
+		<button type='submit' name='like' class='btn btn-secondary'>Like</button>
+		</form>";
+	}
+	else
+	{
+		$output = 
+		"<button class='btn btn-secondary disabled style='width:auto;height:auto;'>Liked</button>";
+	}
+return $output;	
+}
+
+function getDisLikePostButton($db, $theNewRow, $newUserName, $newPostID)
+{
+	$sql = "select count(postID) as total from PostDislikes where userName = '$newUserName' and postID = $newPostID";
+	$count = $db->query($sql);
+	$n = $count->fetch();
+	$count = (int)$n['total'];
+	if ($count == 0)
+	{
+		$output = 
+		"<form action='post.php?msg=$newPostID' method='POST'>
+		<button type='submit' name='dislike' class='btn btn-secondary'>Dislike</button>
+		</form>";
+	}
+	else if ($count > 0)
+	{
+		$output = 
+		"<button class='btn btn-secondary disabled' style='width:auto;height:auto;'>Disliked</button>";
+	}
+	return $output;	
+}
+
 function getDeletePostButton($db, $theNewRow)
 {
-	$output = "<form action='posts.php' method='POST' class='mt-2'>
+	$output = "<form action='posts.php' method='POST'>
 				<p>
 				<a class='btn btn-danger' data-toggle='collapse' href='#deletePost$theNewRow[postID]' role='button' aria-expanded='false' aria-controls='deletePost$theNewRow[postID]'>
 				Delete Post
@@ -127,7 +174,7 @@ function getDeletePostButton($db, $theNewRow)
 				<div class='card card-body'>
 				<input type='hidden' name='postID' value='$theNewRow[postID]'>
 				<h5>Are you sure?</h5>
-				<input type='submit' name='submitDelete' class='btn btn-danger w-25'>
+				<input type='submit' name='submitDelete' class='btn btn-danger w-50'>
 				</div>
 				</div>
 				</form>";
@@ -153,9 +200,18 @@ function getDeleteCommentButton($db, $theNewRow)
 	return $output;
 }
 
+function getEditPostButton($db, $theNewRow) 
+{
+	$output =
+			"<form action='post.php?msg=$theNewRow[postID]' method='POST'>
+			<button type='submit' name='edit' class='btn btn-secondary'>Edit Post</button>
+			</form>";
+	return $output;
+}
+
 function getAddCommentButton($db, $theNewRow)
 {
-	$output = "<form action='post.php?msg=$theNewRow[postID]' method='POST' class='mt-2'>
+	$output = "<form action='post.php?msg=$theNewRow[postID]' method='POST'>
 				<p>
 				<a class='btn btn-secondary' data-toggle='collapse' href='#addComment' role='button' aria-expanded='false' aria-controls='addComment'>
 				Add Comment!
@@ -164,7 +220,7 @@ function getAddCommentButton($db, $theNewRow)
 				<div class='collapse' id='addComment'>
 				<div class='card card-body'>
 				<input type='textarea' rows='4' cols='50' name='commentContent' class='rounded' required>
-				<input type='submit' name='submitComment' class='btn btn-secondary w-25 mt-2'>
+				<input type='submit' name='submitComment' class='btn btn-secondary w-50'>
 				</div>
 				</div>
 				</form>";
@@ -178,20 +234,34 @@ function getSinglePost ($db, $thePostID, $newUserName)
 	$output = "";
 	while ($aRow = $thePost->fetch())
 	{
+		$postLikeCount = getBlogPostLikes($db, $aRow['postID']);
+		$postDislikeCount = getBlogPostDislikes($db, $aRow['postID']);
 		$output .=
 				"<h1 class='text-center text-danger display-5'>$aRow[postTitle] - Posted by $aRow[userName]</h1>
 				<div class='card w-50 bg-dark' style='margin:5 auto;'>
 				<div class='card-body'>
 				<h5 class'card-title' style='color:#ffffff;'>$aRow[postContent]</h5>
 				<h6 class='card-subtitle mb-2 text-muted'>Posted by $aRow[userName]</h6>
-				<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>";
+				<h6 class='card-subtitle mb-2 text-muted'>on $aRow[postDate]</h6>
+				<h6 class='card-subtitle mb-2 text-muted'>Likes: $postLikeCount Dislikes: $postDislikeCount</h6>";
 		if ($newUserName != "")
 		{
+			$output .= "<div class='d-flex flex-row'>";
+			$output .= getLikePostButton($db, $aRow, $newUserName, $aRow['postID']);
+			$output .= getDisLikePostButton($db, $aRow, $newUserName, $aRow['postID']);
+			$output .= "</div>";
 			$output .= 	getAddCommentButton($db, $aRow);
-		}
+		}		
 		if ($newUserName == $aRow['userName']) 
 		{
+			$output .= "<div class='d-flex flex-row'>";
 			$output .= getDeletePostButton($db, $aRow);
+			$output .= getEditPostButton($db, $aRow);
+			$output .= "</div>";
+		}
+		else 
+		{
+			$output .= "</div>";
 		}
 	}
 	if (getBlogCommentCount($db, $thePostID) != 0)
@@ -224,6 +294,26 @@ function getPostComments ($db, $thePostID, $theUserName)
 			$output .= getDeleteCommentButton($db, $aRow);
 		}
 		$output .= "</div></div>";
+	}
+	return $output;
+}
+
+function getEditablePost ($db, $thePostID, $newUserName) 
+{
+	$sql = "select * from blogPost where postID = '$thePostID'";
+	$thePost = $db->query($sql);
+	$output = "";
+	while ($aRow = $thePost->fetch())
+	{
+		$output .=
+		"<form class='mt-3 p-3 w-50 bg-secondary' action='post.php?msg=$aRow[postID]' method='POST' style='margin:0 auto;'>
+		<h3>$aRow[postTitle]</h3>
+		<div class='form-group'>
+		<label for='postContent'>Post Content</label>
+		<textarea class='form-control' name='newPostContent' id='postContent' rows='5' required>$aRow[postContent]</textarea>
+		</div>
+		<button class='btn btn-lg' type='submit'>Update Post!</button>
+		</form>";
 	}
 	return $output;
 }

@@ -25,6 +25,19 @@ if (isset($_POST['commentContent']))
 	$commentContent = $_POST['commentContent'];
 	addComment($db, $postID, $commentContent, $userName);
 }
+if ( isset($_POST['dislike']))
+{
+	dislikePost($db, $postID, $userName);
+}
+if ( isset($_POST['like']))
+{
+	likePost($db, $postID, $userName);
+}
+if ( isset($_POST['newPostContent']))
+{
+	$newPostContent = $_POST['newPostContent'];
+	editBlogPost($db, $newPostContent, $userName);
+}
 ?>
 <HTML>
 <head>
@@ -77,7 +90,14 @@ if (isset($_POST['commentContent']))
 </header>
 <main>
 <?php
-echo getSinglePost($db, $postID, $userName);
+if ( isset ( $_POST['edit']))
+{
+	echo getEditablePost($db, $postID, $userName);
+}
+else 
+{ 
+	echo getSinglePost($db, $postID, $userName);
+}
 ?>
 </main>
 </body>

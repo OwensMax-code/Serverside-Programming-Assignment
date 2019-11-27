@@ -22,7 +22,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 	$address1 = $_POST['address1'];
 	$address2 = $_POST['address2'];
 	addAccount($db, $firstName, $lastName, $userName, $hash, $emailAddress, $dateOfBirth, $phoneNo, $address1, $address2);
-	header('Location: sudokuLogin.php?msg=AccCreated');
+	//header('Location: sudokuLogin.php?msg=AccCreated');
 }
 ?>
 <HTML>

@@ -89,7 +89,32 @@ $sql = "CREATE TABLE BlogComment (
 			REFERENCES Login (userName)
 		)ENGINE INNODB;";
 $db->createTable($Table, $sql);
-
+// Post Likes table creation
+$Table = "PostLikes";
+$sql = "CREATE TABLE PostLikes (
+		likeID INTEGER AUTO_INCREMENT,
+		postID INTEGER NOT NULL,
+		userName VARCHAR(25) NOT NULL,
+		PRIMARY KEY (likeID),
+		FOREIGN KEY (postID)
+			REFERENCES BlogPost (postID),
+		FOREIGN KEY (userName)
+			REFERENCES Login (userName)
+		)ENGINE INNODB;";
+$db->createTable($Table, $sql);
+// Post Dislikes table creation
+$Table = "PostDislikes";
+$sql = "CREATE TABLE PostDislikes (
+		dislikeID INTEGER AUTO_INCREMENT,
+		postID INTEGER NOT NULL,
+		userName VARCHAR(25) NOT NULL,
+		PRIMARY KEY (dislikeID),
+		FOREIGN KEY (postID)
+			REFERENCES BlogPost (postID),
+		FOREIGN KEY (userName)
+			REFERENCES Login (userName)
+		)ENGINE INNODB;";
+$db->createTable($Table, $sql);
 // trigger creation
 
 // create user login trigger
@@ -149,6 +174,42 @@ $db->insertRow($sql);
 $sql = 'insert into BlogPost values (null,"I lost my dog somewhere in the park","A group of angry cousins came at me with knives. Big troubles lie ahead.","2019-05-22","WheresMySuperSuit");';
 $db->insertRow($sql);
 $sql = 'insert into BlogPost values (null,"Good lord, this website!","This is by far the greatest website I have EVER seen. Keep up the A+ work! I am so happy whenever I visit this website.","2018-05-08","MrKansas");';
+$db->insertRow($sql);
+
+// blog post likes insertion
+$sql = "insert into PostLikes values (null,4,'AmitTheSlayer6969')";
+$db->insertRow($sql);
+$sql = "insert into PostLikes values (null,3,'AmitTheSlayer6969')";
+$db->insertRow($sql);
+$sql = "insert into PostLikes values (null,1,'MrKansas')";
+$db->insertRow($sql);
+$sql = "insert into PostLikes values (null,6,'AmitTheSlayer6969')";
+$db->insertRow($sql);
+$sql = "insert into PostLikes values (null,8,'SnickerMan')";
+$db->insertRow($sql);
+$sql = "insert into PostLikes values (null,2,'MrKansas')";
+$db->insertRow($sql);
+$sql = "insert into PostLikes values (null,6,'MrKansas')";
+$db->insertRow($sql);
+$sql = "insert into PostLikes values (null,7,'SnickerMan')";
+$db->insertRow($sql);
+
+// blog post dislikes insertion
+$sql = "insert into PostDislikes values (null,3,'SnickerMan')";
+$db->insertRow($sql);
+$sql = "insert into PostDislikes values (null,8,'AmitTheSlayer6969')";
+$db->insertRow($sql);
+$sql = "insert into PostDislikes values (null,3,'MrKansas')";
+$db->insertRow($sql);
+$sql = "insert into PostDislikes values (null,1,'AmitTheSlayer6969')";
+$db->insertRow($sql);
+$sql = "insert into PostDislikes values (null,8,'SnickerMan')";
+$db->insertRow($sql);
+$sql = "insert into PostDislikes values (null,2,'MrKansas')";
+$db->insertRow($sql);
+$sql = "insert into PostDislikes values (null,6,'MrKansas')";
+$db->insertRow($sql);
+$sql = "insert into PostDislikes values (null,7,'SnickerMan')";
 $db->insertRow($sql);
 
 // blog comment insertion
