@@ -1,4 +1,14 @@
-<!DOCTYPE HTML>
+<?php
+session_start();
+if (isset($_GET["msg"]) && $_GET["msg"] == 'logout')
+{
+	session_unset();
+}
+require_once 'myFunctions.php';
+require_once 'displayFunctions.php';
+include_once 'MYSQLDB.php';
+require 'db.php';
+?>
 <HTML>
 <head>
 
@@ -9,56 +19,53 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Create Post</title>
+  <title>Home</title>
 </head>
 <body class="w-75" style="margin:0 auto;background-image: url(img/Bengal-BG.png);background-repeat: no-repeat;background-position: center;background-size: cover;">
 <header>
-<nav class="navbar navbar-light" style="background-color:#FF7F50;">
+<nav class="navbar navbar-light d=flex flex-row justify-content-between" style="background-color:#FF7F50;">
+<div class='d-flex flex-row'>
   <a class="navbar-brand" href="#">
     <img src="img/bengal.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
     Bengali for the Hardy
   </a>
 <ul class="nav">
   <li class="nav-item">
-    <a class="nav-link active" href="#">Home</a>
+    <a class="btn nav-link active text-dark mr-1" href="BengaliHome.php" style='background-color:#FF9933;'>Home</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Posts</a>
+    <a class="btn nav-link text-dark mr-1" href="posts.php" style='background-color:#FF9933;'>Posts</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">User Profile</a>
+    <a class="btn nav-link text-dark mr-1" href="userProfile.php" style='background-color:#FF9933;'>User Profile</a>
   </li>
 </ul>
+</div>
+<div class='d-flex flex-row'>
   <?php
   if ( isset ($_SESSION['theAccountID']))
 	{
 		$userName = retrieveUserName($db, $_SESSION['theAccountID']);
-		echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - Logout</button></a>";
-		echo "<a href='createPost.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Create Post!</button></a>";
+		echo "<a href='BengaliHome.php?msg=logout'><button type='button' class='btn mr-1' style='background-color:#FF9933;'>$userName - Logout</button></a>";
+		echo "<a href='createPost.php'><button type='button' class='btn mr-1' style='background-color:#FF9933;'>Create Post!</button></a>";
 	}
 	else 
 	{
-		echo "<a href='sudokuLogin.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Login/Signup!</button></a>";
+		echo "<a href='BengaliLogin.php'><button type='button' class='btn mr-1' style='background-color:#FF9933;'>Login/Signup!</button></a>";
 	}
   ?> 
-  <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="#">
     <img src="img/language.png" width="80" height="30" class="d-inline-block align-top" alt="">
   </a>
+  </div>
 </nav>
 </header>
-<main style="">
-<div class="d-flex flex-column text-center" style="margin-top:5rem;">
-<div class="w-50 rounded" style="margin:0 auto;color:#000000;background-color:#FF7F50;">
-<h1 class="display-5">Create post as:</h1>
-<h1 class="display-5">AmitTheSlayer6969</h1>
+<main>
+<div class="d-flex flex-column justify-content-center mt-5">
+<h1 class="display-5 text-center">Welcome to Bengali language learning site!</h1>
+<div class="w-50 border border-dark mb-2" style="margin:0 auto;background-color:#CDCDCD">
+<h5 class="p-2">This is a website</h5>
 </div>
-<form class="form-group w-50 p-2 border border-warning rounded d-flex flex-column" style="margin: 0 auto;margin-top:2rem;background-color:#FF7F50;">
-    <label>Post Title:</label>
-	<input type="text" id="postTitle" placeholder="post title" class="m-1"></input>
-	<label>Post Content:</label>
-    <textarea class="form-control m-1" id="postContent" rows="5" placeholder="type your post here!"></textarea>
-	<button type="submit" class="btn btn-secondary m-1">Post!</button>
-</form>
 </div>
 </main>
 </body>
