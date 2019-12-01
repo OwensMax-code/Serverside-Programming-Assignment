@@ -136,7 +136,9 @@ function getLikePostButton($db, $theNewRow, $newUserName, $newPostID)
 	else
 	{
 		$output = 
-		"<button class='btn btn-secondary disabled style='width:auto;height:auto;'>Liked</button>";
+		"<form action='post.php?msg=$newPostID' method='POST'>
+		<button type='submit' name='feedback' value='unlike' class='btn btn-secondary'>Liked</button>
+		</form>";
 	}
 return $output;	
 }
@@ -157,7 +159,9 @@ function getDisLikePostButton($db, $theNewRow, $newUserName, $newPostID)
 	else if ($count > 0)
 	{
 		$output = 
-		"<button class='btn btn-secondary disabled' style='width:auto;height:auto;'>Disliked</button>";
+		"<form action='post.php?msg=$newPostID' method='POST'>
+		<button type='submit' name='feedback' value='undislike' class='btn btn-secondary'>Disliked</button>
+		</form>";
 	}
 	return $output;	
 }
@@ -174,7 +178,7 @@ function getDeletePostButton($db, $theNewRow)
 				<div class='card card-body'>
 				<input type='hidden' name='postID' value='$theNewRow[postID]'>
 				<h5>Are you sure?</h5>
-				<input type='submit' name='submitDelete' class='btn btn-danger w-50'>
+				<input type='submit' name='submitDelete' class='btn btn-danger'>
 				</div>
 				</div>
 				</form>";
@@ -306,7 +310,8 @@ function getEditablePost ($db, $thePostID, $newUserName)
 	while ($aRow = $thePost->fetch())
 	{
 		$output .=
-		"<form class='mt-3 p-3 w-50 bg-secondary' action='post.php?msg=$aRow[postID]' method='POST' style='margin:0 auto;'>
+		"<h1 class='text-center display-5 text-danger'>Editing: $aRow[postTitle]</h1>
+		<form class='mt-3 p-3 w-50 bg-secondary' action='post.php?msg=$aRow[postID]' method='POST' style='margin:0 auto;'>
 		<h3>$aRow[postTitle]</h3>
 		<div class='form-group'>
 		<label for='postContent'>Post Content</label>

@@ -33,10 +33,10 @@ function addBlogPost($db, $newPostTitle, $newPostContent, $newUserName)
 	$db->query($sql);
 }
 //*********************************************************
-function editBlogPost($db, $newPostContent, $newUserName) 
+function editBlogPost($db, $newPostContent, $newUserName, $newPostID) 
 {
 	$thePostContent = sanitiseText($db, $newPostContent);
-	$sql = "update BlogPost set postContent = '$newPostContent' where userName = '$newUserName'";
+	$sql = "update BlogPost set postContent = '$newPostContent' where userName = '$newUserName' and postID = '$newPostID'";
 	$db->query($sql);
 }
 //*********************************************************
@@ -69,6 +69,20 @@ function dislikePost($db, $newPostID, $newUserName)
 	$db->query($sql);
 	$sql = "insert into PostDislikes values (null, '$newPostID', '$newUserName')";
 	$db->query($sql);
+}
+//*********************************************************
+function removeFeedback($db, $newFeedback, $newPostID, $newUserName)
+{
+	if ($newFeedback == 'unlike')
+	{
+		$sql = "delete from PostLikes where postID = '$newPostID' and userName = '$newUserName'";
+		$db->query($sql);
+	}
+	else if ($newFeedback == 'undislike')
+	{
+		$sql = "delete from PostDislikes where postID = '$newPostID' and userName = '$newUserName'";
+		$db->query($sql);
+	}
 }
 //*********************************************************
 function addAccount($db, $newFirstName, $newLastName, $newUserName, $newHash, $newEmail, $newDateOfBirth, $newPhoneNo, $newAddress1, $newAddress2) 

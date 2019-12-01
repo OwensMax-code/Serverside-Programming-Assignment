@@ -13,8 +13,15 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 {
 	$postTitle = $_POST['postTitle'];
 	$postContent = $_POST['postContent'];
-	addBlogPost($db, $postTitle, $postContent, $userName);
-	header('Location: posts.php?msg=recent');
+	if (!checkBlogPostTitle($db, $postTitle))
+	{
+		addBlogPost($db, $postTitle, $postContent, $userName);
+		header('Location: posts.php?msg=recent');
+	}
+	else 
+	{
+		header('Location: createPost.php?msg=badTitle');
+	}
 }
 ?>
 <HTML>

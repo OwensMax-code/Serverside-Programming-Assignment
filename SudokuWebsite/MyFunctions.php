@@ -33,10 +33,10 @@ function addBlogPost($db, $newPostTitle, $newPostContent, $newUserName)
 	$db->query($sql);
 }
 //*********************************************************
-function editBlogPost($db, $newPostContent, $newUserName) 
+function editBlogPost($db, $newPostContent, $newUserName, $newPostID) 
 {
 	$thePostContent = sanitiseText($db, $newPostContent);
-	$sql = "update BlogPost set postContent = '$newPostContent' where userName = '$newUserName'";
+	$sql = "update BlogPost set postContent = '$newPostContent' where userName = '$newUserName' and postID = '$newPostID'";
 	$db->query($sql);
 }
 //*********************************************************
@@ -71,6 +71,20 @@ function dislikePost($db, $newPostID, $newUserName)
 	$db->query($sql);
 }
 //*********************************************************
+function removeFeedback($db, $newFeedback, $newPostID, $newUserName)
+{
+	if ($newFeedback == 'unlike')
+	{
+		$sql = "delete from PostLikes where postID = '$newPostID' and userName = '$newUserName'";
+		$db->query($sql);
+	}
+	else if ($newFeedback == 'undislike')
+	{
+		$sql = "delete from PostDislikes where postID = '$newPostID' and userName = '$newUserName'";
+		$db->query($sql);
+	}
+}
+//*********************************************************
 function addAccount($db, $newFirstName, $newLastName, $newUserName, $newHash, $newEmail, $newDateOfBirth, $newPhoneNo, $newAddress1, $newAddress2) 
 {
 	$theDateOfBirth = sanitiseDate($newDateOfBirth);
@@ -91,11 +105,16 @@ function addAccount($db, $newFirstName, $newLastName, $newUserName, $newHash, $n
 //*********************************************************
 function checkBlogPostTitle($db, $newPostTitle)
 {
+	$isValid = false;
 	$sql = "select COUNT(postID) as total from BlogPost where postTitle = '$newPostTitle'";
 	$postCount = $db->query($sql);
 	$n = $postCount->fetch();
 	$result = (int)$n['total'];
-    return $result;	
+	if ($result == 0) 
+	{
+		$isValid = true;
+	}
+    return $idValid;	
 }
 //*********************************************************
 function verifyInformation($db, $newUserName, $newEmail)

@@ -81,7 +81,7 @@ function getPosts ($db, $theFilter, $theUserName)
 			</button>
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 			<a class="dropdown-item" href="posts.php">All Posts</a>
-			<a class="dropdown-item" href="posts.php?msg=all">Most Recent Posts</a>
+			<a class="dropdown-item" href="posts.php">Most Recent Posts</a>
 			<a class="dropdown-item" href="posts.php?msg=oldest">Oldest Posts</a>
 			<a class="dropdown-item" href="posts.php?msg=alpha">Posts Alphabetically</a>
 			</div>
@@ -136,7 +136,9 @@ function getLikePostButton($db, $theNewRow, $newUserName, $newPostID)
 	else
 	{
 		$output = 
-		"<button class='btn disabled' style='background-color:#FF9933;'>Liked</button>";
+		"<form action='post.php?msg=$newPostID' method='POST'>
+		<button type='submit' name='feedback' value='unlike' class='btn' style='background-color:#FF9966;'>Liked</button>
+		</form>";
 	}
 return $output;	
 }
@@ -157,7 +159,9 @@ function getDisLikePostButton($db, $theNewRow, $newUserName, $newPostID)
 	else if ($count > 0)
 	{
 		$output = 
-		"<button class='btn disabled' style='background-color:#FF9933;'>Disliked</button>";
+		"<form action='post.php?msg=$newPostID' method='POST'>
+		<button type='submit' name='feedback' value='undislike' class='btn' style='background-color:#FF9966;'>Disliked</button>
+		</form>";
 	}
 	return $output;	
 }
@@ -306,8 +310,9 @@ function getEditablePost ($db, $thePostID, $newUserName)
 	while ($aRow = $thePost->fetch())
 	{
 		$output .=
-		"<form class='mt-3 p-3 w-50 bg-secondary' action='post.php?msg=$aRow[postID]' method='POST' style='margin:0 auto;'>
-		<h3>$aRow[postTitle]</h3>
+		"<h1 class='text-center display-5'>Editing: $aRow[postTitle]</h1>
+		<form class='mt-3 p-3 w-50' action='post.php?msg=$aRow[postID]' method='POST' style='margin:0 auto;background-color:#FF7F50;'>
+		<input type='text' name='postTitle' placeholder='$aRow[postTitle]'></input>
 		<div class='form-group'>
 		<label for='postContent'>Post Content</label>
 		<textarea class='form-control' name='newPostContent' id='postContent' rows='5' required>$aRow[postContent]</textarea>

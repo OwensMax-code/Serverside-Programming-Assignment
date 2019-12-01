@@ -33,10 +33,15 @@ if ( isset($_POST['like']))
 {
 	likePost($db, $postID, $userName);
 }
+if ( isset ($_POST['feedback']))
+{
+	$feedback = $_POST['feedback'];
+	removeFeedback($db, $feedback, $postID, $userName);
+}
 if ( isset($_POST['newPostContent']))
 {
 	$newPostContent = $_POST['newPostContent'];
-	editBlogPost($db, $newPostContent, $userName);
+	editBlogPost($db, $newPostContent, $userName, $postID);
 }
 ?>
 <HTML>
