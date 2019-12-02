@@ -1,0 +1,12 @@
+{
+    "Sudoku":"সুডোকু",
+	"Home":"বাড়ি",
+    "Posts":"পোস্ট",
+    "Profile":"প্রোফাইল",
+	"Login/Signup":"লগইন",
+	"Logout":"প্রস্থান",
+	"Login":"লগইন",
+	"Register":"নিবন্ধন",
+	"Create Post":"পোস্ট তৈরি করুন",
+	"Bengali for the Hardy":"হার্ডির পক্ষে বাঙালি"
+}

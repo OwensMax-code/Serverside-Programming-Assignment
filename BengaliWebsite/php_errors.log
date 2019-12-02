@@ -1,0 +1,4 @@
+[02-Dec-2019 00:48:53 UTC] PHP Fatal error:  Uncaught Error: Class 'I18n' not found in \\ADFSSTUD2\j-m\mao0418\apache24\htdocs\finalAssignment\BengaliWebsite\posts.php:35
+Stack trace:
+#0 {main}
+  thrown in \\ADFSSTUD2\j-m\mao0418\apache24\htdocs\finalAssignment\BengaliWebsite\posts.php on line 35

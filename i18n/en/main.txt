@@ -1,0 +1,10 @@
+{
+    "Sudoku":"সুডোকু",
+    "Posts":"পোস্ট",
+    "Score Board":"স্কোর বোর্ড",
+    "Play Sudoku":"সুডোকু খেলো",
+    "Bengali Space":"বাংলা স্পেস",
+    "Learn Bengali Today":"আজ বাংলা শিখুন",
+    "Log Out":"প্রস্থান",
+    "Most Active Users":"সর্বাধিক সক্রিয় ব্যবহারকারী"
+}
