@@ -1,29 +1,4 @@
 <?php
-
-//*********************************************************
-
-function getAccountDetails($db)
- {
-	$sql = "select * from AccountDetails order by accountID" ;
-    $result = $db->query($sql);  
-    return $result ;
-}
-
-//*********************************************************
-function getLogins($db)
-{
-	$sql = "select * from Login order by userName" ;
-    $result = $db->query($sql);  
-    return $result ;
-}
-
-//*********************************************************
-function getBlogPosts($db)
-{   
-    $sql = "select * from BlogPost" ;
-    $result = $db->query($sql);  
-    return $result;
-}
 //*********************************************************
 function addBlogPost($db, $newPostTitle, $newPostContent, $newUserName) 
 {
@@ -38,6 +13,20 @@ function editBlogPost($db, $newPostContent, $newUserName, $newPostID)
 	$thePostContent = sanitiseText($db, $newPostContent);
 	$sql = "update BlogPost set postContent = '$newPostContent' where userName = '$newUserName' and postID = '$newPostID'";
 	$db->query($sql);
+}
+//*********************************************************
+function checkPostExists($db, $newPostID)
+{
+	$exists = false;
+	$sql = "select count(postID) as total from BlogPost where postID = '$newPostID'";
+	$thePostID = $db->query($sql);
+	$n = $thePostID->fetch();
+	$count = (int)$n['total'];
+	if ($count == 0)
+	{
+		$exists = true;
+	}
+	return $exists;
 }
 //*********************************************************
 function updatePassword($db, $newUserName, $newPassword)
@@ -106,7 +95,7 @@ function addAccount($db, $newFirstName, $newLastName, $newUserName, $newHash, $n
 function checkBlogPostTitle($db, $newPostTitle)
 {
 	$isValid = false;
-	$sql = "select COUNT(postID) as total from BlogPost where postTitle = '$newPostTitle'";
+	$sql = "select COUNT(postID) as total from BlogPost where postTitle = '$newPostTitle'"; //
 	$postCount = $db->query($sql);
 	$n = $postCount->fetch();
 	$result = (int)$n['total'];
@@ -115,34 +104,6 @@ function checkBlogPostTitle($db, $newPostTitle)
 		$isValid = true;
 	}
     return $idValid;	
-}
-//*********************************************************
-function verifyInformation($db, $newUserName, $newEmail)
-{
-	$isValid = false;
-	$sql = "select count(accountID) as total from AccountDetails where userName = '$newUserName' and emailAddress = '$newEmail'";
-	$count = $db->query($sql);
-	$n = $count->fetch();
-	$result = (int)$n['total'];
-	if ($result == 1)
-	{
-		$isValid = true;
-	}
-	return $isValid;
-}
-//*********************************************************
-function checkPostExists($db, $newPostID)
-{
-	$exists = false;
-	$sql = "select count(postID) as total from BlogPost where postID = '$newPostID'";
-	$thePostID = $db->query($sql);
-	$n = $thePostID->fetch();
-	$count = (int)$n['total'];
-	if ($count == 0)
-	{
-		$exists = true;
-	}
-	return $exists;
 }
 //*********************************************************
 function deletePost ($db, $thePostID) 
@@ -185,90 +146,5 @@ function sanitiseText($db, $newText)
 	$output = htmlentities($output);
 	$output = mysqli_real_escape_string($db->getConnection(),$output);
 	return $output;
-}
-//*********************************************************
-function checkPostOwnership ($db, $newUserName, $newPostID)
-{
-	$isOwnPost = false;
-	$sql = "select count(postID) as total from BlogPost where userName = '$newUserName' and postID = '$newPostID'";
-	$postCount = $db->query($sql);
-	$n = $postCount->fetch();
-	$result = (int)$n['total'];
-	if ($result != 0)
-	{
-		$isOwnPost = true;
-	}
-	return $isOwnPost;
-}
-//*********************************************************
-function getBlogCommentCount($db, $thePostID)
-{
-	$sql = "SELECT COUNT(commentID) AS total FROM BlogComment WHERE postID = '$thePostID'";
-	$commentCount = $db->query($sql);  
-	$n = $commentCount->fetch();
-	$result = (int)$n['total'];
-    return $result;
-}
-//*********************************************************
-function getBlogPostLikes($db, $thePostID)
-{
-	$sql = "SELECT COUNT(likeID) as total FROM PostLikes WHERE postID = '$thePostID'";
-	$likeCount = $db->query($sql);
-	$n = $likeCount->fetch();
-	$result = (int)$n['total'];
-	return $result;
-}
-//*********************************************************
-function getBlogPostDislikes($db, $thePostID)
-{
-	$sql = "SELECT COUNT(dislikeID) as total FROM PostDislikes WHERE postID = '$thePostID'";
-	$dislikeCount = $db->query($sql);
-	$n = $dislikeCount->fetch();
-	$result = (int)$n['total'];	
-	return $result;
-}
-//*********************************************************
-function getAccountId($db, $userName, $password)
-{
-	$sql = "select * from Login where userName = '$userName' and hash = '$password'";
-	$account = $db->query($sql);
-	$row = $account->fetch();
-	$result = $row['accountID'];
-	return $result;
-	
-}
-//*********************************************************
-function retrieveLogin($db, $userName)
-{
-	$sql = "select * from Login where userName = '$userName'";
-	$hash = $db->query($sql);
-	$row = $hash->fetch();
-	$result = $row['hash'];
-	return $result;
-}
-//*********************************************************
-function retrieveUserName($db, $theAccountID)
-{
-	$sql = "select * from Login where accountID = '$theAccountID'";
-	$theUserName = $db->query($sql);
-	$row = $theUserName->fetch();
-	$result = $row['userName'];
-	return $result;
-}
-//*********************************************************
-function usernameExists($db, $theUserName)
-{
-	$sql = "select count(userName) as total from Login where userName = '$theUserName'";
-	$theUserName = $db->query($sql);
-	$n = $theUserName->fetch();
-	$count = (int)$n['total'];
-	if ($count == 0)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 ?>

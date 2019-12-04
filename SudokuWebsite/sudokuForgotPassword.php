@@ -3,6 +3,8 @@ session_start();
 require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 require_once 'i18n_sudoku.php';
+require_once 'verification.php';
+require_once 'Retriever.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
 if ( isset ($_SESSION['theAccountID']))
@@ -13,12 +15,12 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST')
 {
 	$email = $_POST['email'];
 	$userName = $_POST['userName'];
-	if (verifyInformation($db, $userName, $email))
+	if (Verification::verifyInformation($db, $userName, $email))
 	{
 		echo $userName;
 		$newPassword = $_POST['password'];
 		updatePassword($db, $userName, $newPassword);
-		//header('Location:sudokuLogin.php?msg=passwordSuccess');
+		header('Location:sudokuLogin.php?msg=passwordSuccess');
 	}
 	else
 	{

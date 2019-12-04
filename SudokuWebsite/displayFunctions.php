@@ -42,9 +42,9 @@ function getUsersPosts ($db, $userName)
 		$output .= "<h1 class='display-5 text-center mt-3 mb-3'>Your Posts - $count total!</h1>";
 		while ($aRow = $accountInfo->fetch())
 		{
-			$postLikeCount = getBlogPostLikes($db, $aRow['postID']);
-			$postDislikeCount = getBlogPostDislikes($db, $aRow['postID']);
-			$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
+			$postLikeCount = Retriever::getBlogPostLikes($db, $aRow['postID']);
+			$postDislikeCount = Retriever::getBlogPostDislikes($db, $aRow['postID']);
+			$postCommentCount = Retriever::getBlogCommentCount($db, $aRow['postID']);
 			$output .= generatePost($db, $postCommentCount,$postLikeCount, $postDislikeCount, $aRow, $userName);
 		}
 	}	
@@ -91,9 +91,9 @@ function getPosts ($db, $theFilter, $theUserName)
 	$output .= "<div class='overflow-auto bg-secondary' style='height: 75vh;overflow-y: scroll;width: 75%;margin:0 auto;'>";
 	while ($aRow = $orderedPosts->fetch())
 	{
-		$postLikeCount = getBlogPostLikes($db, $aRow['postID']);
-		$postDislikeCount = getBlogPostDislikes($db, $aRow['postID']);
-		$postCommentCount = getBlogCommentCount($db, $aRow['postID']);
+		$postLikeCount = Retriever::getBlogPostLikes($db, $aRow['postID']);
+		$postDislikeCount = Retriever::getBlogPostDislikes($db, $aRow['postID']);
+		$postCommentCount = Retriever::getBlogCommentCount($db, $aRow['postID']);
 		$output .= generatePost($db, $postCommentCount, $postLikeCount, $postDislikeCount, $aRow, $theUserName);
 	}	
 	$output .= "</div>";
@@ -238,8 +238,8 @@ function getSinglePost ($db, $thePostID, $newUserName)
 	$output = "";
 	while ($aRow = $thePost->fetch())
 	{
-		$postLikeCount = getBlogPostLikes($db, $aRow['postID']);
-		$postDislikeCount = getBlogPostDislikes($db, $aRow['postID']);
+		$postLikeCount = Retriever::getBlogPostLikes($db, $aRow['postID']);
+		$postDislikeCount = Retriever::getBlogPostDislikes($db, $aRow['postID']);
 		$output .=
 				"<h1 class='text-center text-danger display-5'>$aRow[postTitle] - Posted by $aRow[userName]</h1>
 				<div class='card w-50 bg-dark' style='margin:5 auto;background-color:#CDCDCD;'>
@@ -256,7 +256,7 @@ function getSinglePost ($db, $thePostID, $newUserName)
 			$output .= "</div>";
 			$output .= 	getAddCommentButton($db, $aRow);
 		}		
-		if ($newUserName == $aRow['userName']) 
+		if (Verification::verifyPostOwnership($db,$newUserName,$aRow['postID'])) 
 		{
 			$output .= "<div class='d-flex flex-row'>";
 			$output .= getDeletePostButton($db, $aRow);
@@ -268,7 +268,7 @@ function getSinglePost ($db, $thePostID, $newUserName)
 			$output .= "</div>";
 		}
 	}
-	if (getBlogCommentCount($db, $thePostID) != 0)
+	if (Retriever::getBlogCommentCount($db, $thePostID) != 0)
 	{
 		$output .= '</div></div><h1 class="display-5 text-center text-danger mr-5">Comments:</h1>';
 		$output .= getPostComments($db, $thePostID, $newUserName);

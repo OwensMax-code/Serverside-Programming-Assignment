@@ -3,9 +3,11 @@ session_start();
 require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 require_once 'i18n_sudoku.php';
+require_once 'verification.php';
+require_once 'Retriever.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
-$userName = retrieveUserName($db, $_SESSION['theAccountID']); 
+$userName = Retriever::retrieveUserName($db, $_SESSION['theAccountID']); 
 if (!isset($_SESSION['theAccountID']))
 {
 	header('Location: sudokuLogin.php?msg=notLoggedIn');
@@ -14,7 +16,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 {
 	$postTitle = $_POST['postTitle'];
 	$postContent = $_POST['postContent'];
-	if (!checkBlogPostTitle($db, $postTitle))
+	if (Verification::checkDuplicateTitle($db, $postTitle))
 	{
 		addBlogPost($db, $postTitle, $postContent, $userName);
 		header('Location: posts.php?msg=recent');
@@ -60,7 +62,6 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 			<div>
 				<?php if ( isset ($_SESSION[ 'theAccountID']))
 						{
-							$userName=retrieveUserName($db, $_SESSION[ 'theAccountID']);
 							echo "<a href='sudokuHome.php?msg=logout'><button type='button' class='btn btn-secondary btn-lg'>$userName - logout</button></a>";
 							echo "<a href='createPost.php'><button type='button' class='btn btn-secondary btn-lg m-1'>Create Post!</button></a>";
 						} 

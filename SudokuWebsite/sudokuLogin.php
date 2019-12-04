@@ -3,6 +3,8 @@ session_start();
 require_once 'myFunctions.php';
 require_once 'displayFunctions.php';
 require_once 'i18n_sudoku.php';
+require_once 'verification.php';
+require_once 'Retriever.php';
 include_once 'MYSQLDB.php';
 require 'db.php';
 if ( isset ($_SESSION['theAccountID']))
@@ -17,7 +19,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST')
 	$login = $userName . $password;
 	if (password_verify($login, $hash))
 	{			
-		$theAccountID = getAccountID( $db, $userName, $hash );
+		$theAccountID = Retriever::getAccountID( $db, $userName, $hash );
 		$_SESSION['theAccountID'] = $theAccountID;
 		header('Location: userProfile.php'); 
 	}
