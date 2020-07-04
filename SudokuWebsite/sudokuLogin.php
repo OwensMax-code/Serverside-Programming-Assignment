@@ -15,7 +15,7 @@ if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST')
 {
 	$userName = $_POST['userName'];
 	$password = $_POST['password'];
-	$hash = retrieveLogin($db, $userName);
+	$hash = Retriever::retrieveLogin($db, $userName);
 	$login = $userName . $password;
 	if (password_verify($login, $hash))
 	{			
